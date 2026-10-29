@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}बल्क फाईल अपलोड — चारा सर्वेक्षण{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+        <div class="card shadow-sm border-0 rounded-3">
+            <div class="card-header bg-white py-3 border-bottom">
+                <h4 class="mb-0 text-primary fw-bold">
+                    <i class="bi bi-cloud-arrow-up-fill me-2"></i>चारा टंचाई सर्वेक्षण फाईल्स बल्क अपलोड
+                </h4>
+                <small class="text-muted">
+                    स्कॅन केलेले PDF, प्रतिमा किंवा Excel/CSV फाईल्स एकाच वेळी अपलोड करा
+                </small>
+            </div>
+
+            <div class="card-body p-4">
+                <div class="alert alert-info d-flex align-items-center mb-4">
+                    <i class="bi bi-info-circle-fill fs-4 me-3 text-primary"></i>
+                    <div class="small">
+                        <strong>समर्थित फाईल प्रकार:</strong>
+                        <ul class="mb-0 ps-3">
+                            <li><strong>PDF व प्रतिमा (OCR):</strong> .pdf, .png, .jpg, .jpeg, .tiff, .bmp (मराठी/इंग्रजी हस्तलिखित व मुद्रित तक्ते)</li>
+                            <li><strong>स्प्रेडशीट (डेटा मॅपिंग):</strong> .xlsx, .xlsm, .csv (मराठी युनिकोड व फोन नंबर सुरक्षितता)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <form method="POST" action="/upload" enctype="multipart/form-data" id="uploadForm">
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">फाईल्स निवडा किंवा कॅमेऱ्याने फोटो काढा</label>
+                        <div class="d-flex gap-2 mb-2">
+                            <input class="form-control form-control-lg" type="file" name="files" multiple accept=".pdf,.png,.jpg,.jpeg,.tif,.tiff,.bmp,.csv,.xlsx,.xlsm" id="fileInput">
+                            <button type="button" class="btn btn-outline-primary d-flex align-items-center px-3 fw-semibold text-nowrap" onclick="document.getElementById('cameraInput').click()" title="मोबाईल कॅमेऱ्याने थेट फोटो काढा">
+                                <i class="bi bi-camera-fill me-2 fs-5"></i> कॅमेरा (Photo)
+                            </button>
+                        </div>
+                        <input type="file" name="files" accept="image/*" capture="environment" id="cameraInput" class="d-none" onchange="handleCameraSelect(this)">
+                        <div class="form-text small mt-2">
+                            <i class="bi bi-phone-fill me-1 text-primary"></i> <strong>Android मोबाईल सपोर्ट:</strong> तुम्ही मोबाईल कॅमेऱ्याने थेट कागदी तक्त्याचा फोटो काढून किंवा PDF निवडून अपलोड करू शकता.
+                        </div>
+                    </div>
+
+                    <div class="mb-4 bg-light p-3 rounded-2 border">
+                        <div class="form-check form-switch mb-2">
+                            <input class="form-check-input" type="checkbox" name="detect_duplicates" value="1" id="detectDup" checked>
+                            <label class="form-check-label fw-semibold" for="detectDup">
+                                संभाव्य डुप्लिकेट नोंदी आपोआप तपासा (Detect Duplicates)
+                            </label>
+                        </div>
+                        <small class="text-muted d-block ps-4 mb-3">
+                            मोबाईल क्रमांक व गाव-शेतकरी नावाची जुळणी करून डुप्लिकेट नोंदींना त्वरित इशारा ध्वजांकित केले जाईल.
+                        </small>
+
+                        <div class="form-check form-switch mb-1">
+                            <input class="form-check-input" type="checkbox" name="force" value="1" id="forceReimport">
+                            <label class="form-check-label fw-semibold text-primary" for="forceReimport">
+                                <i class="bi bi-robot me-1"></i> सक्तीने पुन्हा AI द्वारे प्रोसेस करा (Force Re-process with AI Vision)
+                            </label>
+                        </div>
+                        <small class="text-muted d-block ps-4">
+                            ही फाईल आधी अपलोड केलेली असली तरीही नव्याने AI व्हिजनद्वारे शेतकऱ्यांची नावे व डेटा अचूक काढून नवीन बॅच तयार करेल.
+                        </small>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary btn-lg fw-bold" type="submit" id="submitBtn">
+                            <i class="bi bi-upload me-2"></i>अपलोड व प्रक्रिया सुरू करा (Process Files)
+                        </button>
+                    </div>
+
+                    <!-- Processing Spinner (Hidden initially) -->
+                    <div id="processingIndicator" class="text-center py-4 d-none">
+                        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <h6 class="mt-3 text-dark fw-bold">फाईल्स वाचत आहे व OCR प्रक्रिया चालू आहे...</h6>
+                        <p class="small text-muted mb-0">कृपया प्रतीक्षा करा, फाईल आकारानुसार काही सेकंद लागू शकतात.</p>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card-footer bg-light py-3 border-top text-center">
+                <a href="/farmers" class="text-decoration-none">
+                    <i class="bi bi-arrow-left me-1"></i> शेतकरी नोंदी डॅशबोर्ड पहा (Go to Dashboard)
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    const form = document.getElementById('uploadForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const spinner = document.getElementById('processingIndicator');
+
+    form.addEventListener('submit', function() {
+        submitBtn.disabled = true;
+        submitBtn.classList.add('d-none');
+        spinner.classList.remove('d-none');
+    });
+
+    function handleCameraSelect(input) {
+        if (input.files && input.files.length > 0) {
+            form.submit();
+        }
+    }
+</script>
+{% endblock %}

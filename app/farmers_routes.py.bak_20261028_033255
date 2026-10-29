@@ -1,0 +1,203 @@
+﻿from flask import Blueprint, render_template, request, redirect, url_for, send_file
+from pathlib import Path
+from werkzeug.utils import secure_filename
+from openpyxl import load_workbook, Workbook
+import sqlite3, csv, io, json, uuid
+from datetime import datetime
+
+farmers_bp = Blueprint("farmers", __name__)
+ROOT = Path(__file__).resolve().parents[1]
+DB = ROOT / "data" / "review.db"
+IMPORT_DIR = ROOT / "data" / "farmer_imports"
+IMPORT_DIR.mkdir(parents=True, exist_ok=True)
+
+FIELDS = [
+    "taluka", "veterinary_hospital", "revenue_circle", "village_name",
+    "farmer_name", "mobile", "cow_small", "cow_large", "buffalo_small",
+    "buffalo_large", "milch_animals", "dry_animals", "daily_milk_litres",
+    "goats", "sheep_migratory", "sheep_confined", "water_availability",
+    "green_fodder_available", "silage_available", "dry_fodder_available",
+    "green_fodder_tonnes", "silage_tonnes", "dry_fodder_tonnes",
+    "fodder_for_sale_tonnes", "rabi_area_hectares", "irrigation_available",
+    "irrigation_types", "irrigation_other"
+]
+
+def connect():
+    conn = sqlite3.connect(DB)
+    conn.row_factory = sqlite3.Row
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS farmer_import_staging (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            source_file TEXT NOT NULL,
+            row_json TEXT NOT NULL,
+            matched_farmer_id INTEGER,
+            match_reason TEXT DEFAULT '',
+            status TEXT NOT NULL DEFAULT 'pending',
+            created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+    conn.commit()
+    return conn
+
+def read_rows(path):
+    if path.suffix.lower() == ".csv":
+        rows = list(csv.reader(io.StringIO(
+            path.read_text(encoding="utf-8-sig", errors="replace")
+        )))
+    elif path.suffix.lower() in {".xlsx", ".xlsm"}:
+        wb = load_workbook(path, read_only=True, data_only=True)
+        rows = list(wb.active.iter_rows(values_only=True))
+        wb.close()
+    else:
+        raise ValueError("Sirf CSV, XLSX ya XLSM file upload karein.")
+
+    if len(rows) < 2:
+        raise ValueError("File mein header aur data rows honi chahiye.")
+
+    headers = [str(v or "").strip().lower() for v in rows[0]]
+    result = []
+    for values in rows[1:]:
+        if not any(str(v or "").strip() for v in values):
+            continue
+        item = {}
+        for field in FIELDS:
+            item[field] = ""
+            if field in headers:
+                i = headers.index(field)
+                if i < len(values) and values[i] is not None:
+                    item[field] = str(values[i]).strip()
+        result.append(item)
+    return result
+
+@farmers_bp.route("/farmers", methods=["GET", "POST"])
+def dashboard():
+    conn = connect()
+    message, error = "", ""
+
+    if request.method == "POST":
+        action = request.form.get("action", "")
+        if action == "upload":
+            file = request.files.get("file")
+            if not file or not file.filename:
+                error = "Pehle CSV ya Excel file choose karein."
+            else:
+                name = secure_filename(file.filename)
+                ext = Path(name).suffix.lower()
+                if ext not in {".csv", ".xlsx", ".xlsm"}:
+                    error = "File type supported nahi hai."
+                else:
+                    path = IMPORT_DIR / (uuid.uuid4().hex + "_" + name)
+                    file.save(path)
+                    try:
+                        rows = read_rows(path)
+                        for row in rows:
+                            conn.execute(
+                                """INSERT INTO farmer_import_staging
+                                (source_file,row_json) VALUES (?,?)""",
+                                (path.name, json.dumps(row, ensure_ascii=False))
+                            )
+                        conn.commit()
+                        message = f"{len(rows)} rows review ke liye upload hue."
+                    except Exception as exc:
+                        error = f"Import error: {exc}"
+
+        elif action in {"approve", "reject"}:
+            try:
+                sid = int(request.form.get("staging_id", "0"))
+                item = conn.execute(
+                    "SELECT * FROM farmer_import_staging WHERE id=? AND status='pending'",
+                    (sid,)
+                ).fetchone()
+                if not item:
+                    error = "Pending row nahi mili."
+                elif action == "reject":
+                    conn.execute(
+                        "UPDATE farmer_import_staging SET status='rejected' WHERE id=?",
+                        (sid,)
+                    )
+                    conn.commit()
+                    message = "Row reject hui."
+                else:
+                    data = json.loads(item["row_json"])
+                    name, village = data.get("farmer_name", ""), data.get("village_name", "")
+                    if not name or not village:
+                        error = "Approve karne se pehle farmer_name aur village_name headers/data check karein."
+                    else:
+                        mobile = data.get("mobile", "")
+                        match = None
+                        if mobile:
+                            match = conn.execute(
+                                "SELECT id FROM farmers WHERE mobile=? LIMIT 1",
+                                (mobile,)
+                            ).fetchone()
+                        if not match:
+                            match = conn.execute(
+                                """SELECT id FROM farmers
+                                WHERE lower(trim(farmer_name))=lower(?)
+                                AND lower(trim(village_name))=lower(?) LIMIT 1""",
+                                (name, village)
+                            ).fetchone()
+
+                        if match:
+                            updates = {k: v for k, v in data.items() if v != ""}
+                            updates["source_file"] = item["source_file"]
+                            updates["status"] = "verified"
+                            updates["updated_at"] = datetime.now().isoformat(timespec="seconds")
+                            sql = ", ".join(f'"{k}"=?' for k in updates)
+                            conn.execute(
+                                f"UPDATE farmers SET {sql} WHERE id=?",
+                                list(updates.values()) + [match["id"]]
+                            )
+                            message = f"Existing farmer #{match['id']} updated."
+                        else:
+                            cols = list(data.keys())
+                            sqlcols = ", ".join(f'"{c}"' for c in cols)
+                            marks = ",".join("?" for _ in cols)
+                            conn.execute(
+                                f"""INSERT INTO farmers
+                                ({sqlcols},source_file,status)
+                                VALUES ({marks},?,'verified')""",
+                                [data[c] for c in cols] + [item["source_file"]]
+                            )
+                            message = "New farmer added."
+                        conn.execute(
+                            "UPDATE farmer_import_staging SET status='approved' WHERE id=?",
+                            (sid,)
+                        )
+                        conn.commit()
+            except Exception as exc:
+                error = f"Save error: {exc}"
+
+    pending = conn.execute(
+        "SELECT * FROM farmer_import_staging WHERE status='pending' ORDER BY id DESC LIMIT 100"
+    ).fetchall()
+    farmers = conn.execute(
+        "SELECT * FROM farmers ORDER BY id DESC LIMIT 200"
+    ).fetchall()
+    conn.close()
+
+    return render_template(
+        "farmers.html", message=message, error=error,
+        pending=[dict(r, data=json.loads(r["row_json"])) for r in pending],
+        farmers=farmers
+    )
+
+@farmers_bp.route("/farmers/export.xlsx")
+def export():
+    conn = connect()
+    rows = conn.execute("SELECT * FROM farmers ORDER BY village_name, farmer_name").fetchall()
+    conn.close()
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Farmers"
+    headers = FIELDS + ["source_file", "status", "created_at", "updated_at"]
+    ws.append(headers)
+    for row in rows:
+        ws.append([row[h] if h in row.keys() else "" for h in headers])
+    out = io.BytesIO()
+    wb.save(out)
+    out.seek(0)
+    return send_file(
+        out, as_attachment=True, download_name="farmers_latest.xlsx",
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )

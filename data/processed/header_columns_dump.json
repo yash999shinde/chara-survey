@@ -1,0 +1,97 @@
+{
+  "sr_no": {
+    "x1": 60,
+    "x2": 110,
+    "header_ocr": "॥"
+  },
+  "farmer_name": {
+    "x1": 110,
+    "x2": 399,
+    "header_ocr": "ina <<. -_~ ~"
+  },
+  "mobile": {
+    "x1": 399,
+    "x2": 611,
+    "header_ocr": "ca"
+  },
+  "c1_cow_large": {
+    "x1": 611,
+    "x2": 653,
+    "header_ocr": "i"
+  },
+  "c2_cow_small": {
+    "x1": 653,
+    "x2": 697,
+    "header_ocr": "E\nE"
+  },
+  "c3_buff_large": {
+    "x1": 697,
+    "x2": 741,
+    "header_ocr": ""
+  },
+  "c4_buff_small": {
+    "x1": 741,
+    "x2": 781,
+    "header_ocr": ""
+  },
+  "c5_milch": {
+    "x1": 781,
+    "x2": 817,
+    "header_ocr": "ta\nउ\nटु"
+  },
+  "c6_dry": {
+    "x1": 817,
+    "x2": 858,
+    "header_ocr": "7"
+  },
+  "c7_total": {
+    "x1": 858,
+    "x2": 911,
+    "header_ocr": "दुभती\nजनावरे"
+  },
+  "c8_milk": {
+    "x1": 911,
+    "x2": 958,
+    "header_ocr": ":\nbi\nउत्पाद\nन\n(लिटर"
+  },
+  "c9_goats": {
+    "x1": 958,
+    "x2": 1004,
+    "header_ocr": ":"
+  },
+  "c10_sheep": {
+    "x1": 1004,
+    "x2": 1065,
+    "header_ocr": ""
+  },
+  "c11_water": {
+    "x1": 1065,
+    "x2": 1125,
+    "header_ocr": "="
+  },
+  "c12_green_fodder": {
+    "x1": 1125,
+    "x2": 1179,
+    "header_ocr": ""
+  },
+  "c13_silage": {
+    "x1": 1179,
+    "x2": 1238,
+    "header_ocr": "=\nपाणी |\nwere\nतातआहे\nचाही)"
+  },
+  "c14_dry_fodder": {
+    "x1": 1238,
+    "x2": 1320,
+    "header_ocr": ""
+  },
+  "c15_area": {
+    "x1": 1320,
+    "x2": 1450,
+    "header_ocr": ""
+  },
+  "c16_irrigation": {
+    "x1": 1450,
+    "x2": 1600,
+    "header_ocr": "टम\nwile सिंचन\nउपलब्ध | लागवडी hres\nचारा a\na) ळा"
+  }
+}

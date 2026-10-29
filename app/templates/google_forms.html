@@ -1,0 +1,263 @@
+{% extends "base.html" %}
+
+{% block title %}Google Form ऑटोमेशन — चारा सर्वेक्षण प्रणाली{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center bg-white p-3 rounded-3 shadow-sm border">
+            <div>
+                <h3 class="fw-bold text-primary mb-1">
+                    <i class="bi bi-google me-2 text-danger"></i>Google Form ऑटो-फिल व ऑटो-सबमिशन
+                </h3>
+                <p class="text-muted small mb-0">
+                    कोणत्याही Google Form ची लिंक पेस्ट करा — सिस्टीम आपोआप सर्व प्रश्न ओळखून शेतकऱ्यांची माहिती भरून थेट सबमिट करेल.
+                </p>
+            </div>
+            <div>
+                <a href="/farmers" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left me-1"></i> डॅशबोर्डवर परत जा
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 1: Form URL Input & Inspection -->
+    <div class="col-lg-7 col-md-12">
+        <div class="card shadow-sm border-0 rounded-3 mb-4">
+            <div class="card-header bg-white py-3 border-bottom">
+                <h5 class="fw-bold mb-0 text-dark">
+                    <span class="badge bg-primary text-white me-2">१</span>Google Form ची लिंक टाका
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <form method="GET" action="/google_forms">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Google Form Link (कोणत्याही Google Form ची URL):</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="bi bi-link-45deg"></i></span>
+                            <input type="url" name="form_url" class="form-control" value="{{ form_url }}" placeholder="https://docs.google.com/forms/d/e/.../viewform" required>
+                            <button type="submit" class="btn btn-primary fw-semibold px-4">
+                                <i class="bi bi-search me-1"></i> फॉर्म तपासा (Inspect)
+                            </button>
+                        </div>
+                        <div class="form-text small mt-2">
+                            <i class="bi bi-info-circle me-1"></i> तुम्ही कोणताही नवीन किंवा वेगळा Google Form वापरू शकता (उदा. <code>forms.gle/...</code> किंवा <code>docs.google.com/forms/...</code>).
+                        </div>
+                    </div>
+                </form>
+
+                {% if inspect_error %}
+                <div class="alert alert-danger d-flex align-items-center mt-3">
+                    <i class="bi bi-exclamation-triangle-fill fs-4 me-2"></i>
+                    <div>
+                        <strong>फॉर्म तपासताना त्रुटी:</strong> {{ inspect_error }}
+                    </div>
+                </div>
+                {% elif form_meta %}
+                <div class="alert alert-success bg-success bg-opacity-10 text-success border-0 rounded-3 p-3 mt-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="fw-bold mb-1"><i class="bi bi-check-circle-fill me-1"></i> फॉर्म यशस्वीरित्या कनेक्ट झाला!</h6>
+                            <div class="small text-dark">
+                                <strong>फॉर्म शीर्षक:</strong> {{ form_meta.title or 'चारा टंचाई माहिती - गावनिहाय सर्वेक्षण' }}<br>
+                                <strong>एकूण प्रश्न/फील्ड्स:</strong> {{ form_meta.total_fields }} | 
+                                <strong>ऑटो-मॅप झालेले फील्ड्स:</strong> <span class="badge bg-success">{{ form_meta.mapped_count }} फील्ड्स जुळले</span>
+                            </div>
+                        </div>
+                        <a href="{{ form_meta.view_url }}" target="_blank" class="btn btn-sm btn-outline-success bg-white">
+                            <i class="bi bi-box-arrow-up-right me-1"></i> मूळ फॉर्म उघडा
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Accordion of Detected & Mapped Fields -->
+                <div class="accordion mt-3" id="fieldsAccordion">
+                    <div class="accordion-item border rounded-2">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button collapsed py-2 small fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                <i class="bi bi-list-check me-2"></i> ऑटो-मॅप झालेले सर्व प्रश्न व फील्ड्स पहा ({{ form_meta.mapped_count }}/{{ form_meta.total_fields }})
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#fieldsAccordion">
+                            <div class="accordion-body p-0">
+                                <div class="table-responsive" style="max-height: 280px; overflow-y: auto;">
+                                    <table class="table table-sm table-striped mb-0 small">
+                                        <thead class="table-light sticky-top">
+                                            <tr>
+                                                <th>फॉर्ममधील प्रश्न (Google Form Question)</th>
+                                                <th>Entry ID</th>
+                                                <th>मॅप झालेला डेटा (Farmer Field)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for q in form_meta.questions %}
+                                            <tr>
+                                                <td>
+                                                    {{ q.title }}
+                                                    {% if q.required %}<span class="text-danger">*</span>{% endif %}
+                                                </td>
+                                                <td><code>{{ q.entry_id }}</code></td>
+                                                <td>
+                                                    {% if q.mapped_field %}
+                                                    <span class="badge bg-primary text-white">{{ q.mapped_field }}</span>
+                                                    {% else %}
+                                                    <span class="text-muted">लागू असल्यास डीफॉल्ट (0/रिकामे)</span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 2: Auto-Fill & Submission Panel -->
+    <div class="col-lg-5 col-md-12">
+        <div class="card shadow-sm border-0 rounded-3 mb-4">
+            <div class="card-header bg-white py-3 border-bottom">
+                <h5 class="fw-bold mb-0 text-dark">
+                    <span class="badge bg-success text-white me-2">२</span>ऑटो-फिल व सबमिशन पर्याय
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                {% if form_meta %}
+                <form method="POST" action="/google_forms/submit_all" onsubmit="return confirm('तुम्ही निवडलेल्या सर्व शेतकऱ्यांची माहिती थेट Google Form मध्ये सबमिट करू इच्छिता?');">
+                    <input type="hidden" name="form_url" value="{{ form_url }}">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">कोणत्या शेतकऱ्यांचा डेटा भरायचा?</label>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="scope" id="scopeVerified" value="verified" checked onchange="toggleBatchSelect(false)">
+                            <label class="form-check-label fw-semibold" for="scopeVerified">
+                                फक्त पडताळणी झालेले शेतकरी (Verified Farmers)
+                                <span class="badge bg-success ms-1">{{ verified_count }} नोंदी</span>
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="scope" id="scopeBatch" value="batch" onchange="toggleBatchSelect(true)">
+                            <label class="form-check-label fw-semibold" for="scopeBatch">
+                                एका विशिष्ट बॅचचा सर्व डेटा (Select Specific Batch)
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="scope" id="scopeAll" value="all" onchange="toggleBatchSelect(false)">
+                            <label class="form-check-label fw-semibold" for="scopeAll">
+                                डेटाबेसमधील सर्व शेतकरी (All Farmers)
+                                <span class="badge bg-secondary ms-1">{{ total_count }} नोंदी</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Batch Selector Dropdown (Hidden initially unless batch scope chosen) -->
+                    <div class="mb-3 d-none" id="batchSelectContainer">
+                        <label class="form-label small fw-semibold text-muted">बॅच निवडा:</label>
+                        <select name="batch_id" class="form-select form-select-sm">
+                            {% for b in upload_batches %}
+                            <option value="{{ b.batch_id }}">
+                                {{ b.batch_id }} ({{ b.record_count }} शेतकरी) — {{ b.source_file }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="alert alert-warning py-2 px-3 small border-0 bg-warning bg-opacity-10 text-dark mb-4">
+                        <i class="bi bi-shield-check text-warning me-1"></i>
+                        प्रत्येक शेतकऱ्याचा डेटा HTTP POST द्वारे थेट Google Form मध्ये रेकॉर्ड केला जाईल आणि डेटाबेसमध्ये स्थिती <strong>'submitted'</strong> केली जाईल.
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg fw-bold shadow-sm">
+                            <i class="bi bi-send-fill me-2"></i>सर्व फॉर्म्स ऑटो-सबमिट करा (Auto-Submit)
+                        </button>
+
+                        <a href="/google_forms/prefilled_links?form_url={{ form_url|urlencode }}&scope=verified" class="btn btn-outline-primary fw-semibold mt-1">
+                            <i class="bi bi-box-arrow-up-right me-1"></i> प्री-फिल्ड लिंक्स पहा (Preview Prefilled Links)
+                        </a>
+                    </div>
+                </form>
+                {% else %}
+                <div class="text-center py-4 text-muted">
+                    <i class="bi bi-arrow-left-circle fs-1 text-primary mb-2 d-block"></i>
+                    पहिले डाव्या बाजूला Google Form ची लिंक टाकून <strong>'तपासा'</strong> वर क्लिक करा.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 3: Submissions History Log Table -->
+    <div class="col-12">
+        <div class="card shadow-sm border-0 rounded-3">
+            <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold mb-0 text-dark">
+                    <i class="bi bi-clock-history me-2 text-primary"></i>अलीकडील सबमिशन लॉग (Submission History)
+                </h5>
+                <span class="badge bg-light text-dark border">
+                    एकूण सबमिट नोंदी: {{ recent_submissions|length }}
+                </span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0" style="font-size: 0.9rem;">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>शेतकऱ्याचे नाव</th>
+                                <th>मोबाईल</th>
+                                <th>सबमिशन दिनांक व वेळ</th>
+                                <th>HTTP स्थिती</th>
+                                <th>Google Form प्रतिसाद</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if recent_submissions %}
+                                {% for sub in recent_submissions %}
+                                <tr>
+                                    <td><code>#{{ sub.farmer_id }}</code></td>
+                                    <td class="fw-bold">{{ sub.farmer_name }}</td>
+                                    <td>{{ sub.mobile }}</td>
+                                    <td><small class="text-muted">{{ sub.submitted_at }}</small></td>
+                                    <td>
+                                        {% if sub.http_status == 200 %}
+                                        <span class="badge bg-success"><i class="bi bi-check2 me-1"></i>200 OK</span>
+                                        {% else %}
+                                        <span class="badge bg-warning text-dark">{{ sub.http_status }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td><small class="text-muted">{{ sub.response_snippet[:60] }}...</small></td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-4 text-muted">
+                                        अद्याप कोणतीही सबमिशन नोंद झालेली नाही.
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleBatchSelect(show) {
+    const container = document.getElementById('batchSelectContainer');
+    if (show) {
+        container.classList.remove('d-none');
+    } else {
+        container.classList.add('d-none');
+    }
+}
+</script>
+{% endblock %}

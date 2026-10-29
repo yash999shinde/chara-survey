@@ -1,0 +1,169 @@
+TOTAL FARMERS IN DB: 91
+
+--- 1. DISTRIBUTION BY SOURCE FILE ---
+  4c6d29186a5840f3b14bc5f17240642c.pdf: 18 records | Batch: BATCH-LEGACY-4c6d29186a5840f3b14b | Created: 2026-10-28 03:08:21
+  20261029_042225_test_upload_survey.pdf: 6 records | Batch: BATCH-LEGACY-20261029_042225_test | Created: 2026-10-29 04:22:44
+  20261029_042334_test_upload_survey.pdf: 6 records | Batch: BATCH-LEGACY-20261029_042334_test | Created: 2026-10-29 04:23:52
+  20261029_042422_test_upload_survey.pdf: 6 records | Batch: BATCH-LEGACY-20261029_042422_test | Created: 2026-10-29 04:24:39
+  20261029_042901_test_upload_survey.pdf: 6 records | Batch: BATCH-LEGACY-20261029_042901_test | Created: 2026-10-29 04:29:18
+  20261029_043319_bhiya_2.pdf: 6 records | Batch: BATCH-LEGACY-20261029_043319_bhiy | Created: 2026-10-29 04:33:40
+  20261029_045247_test_upload_survey.pdf: 6 records | Batch: BATCH-LEGACY-20261029_045247_test | Created: 2026-10-29 04:53:04
+  20261029_050646_test_upload_survey.pdf: 6 records | Batch: BATCH-20261029_050646-8c5552 | Created: 2026-10-29 05:07:22
+  20261029_051601_test_upload_survey.pdf: 6 records | Batch: BATCH-20261029_051601-21514c | Created: 2026-10-29 05:16:34
+  20261029_051751_test_upload_survey.pdf: 6 records | Batch: BATCH-20261029_051751-cbcc91 | Created: 2026-10-29 05:18:24
+  20261029_052137_bhiya_2.pdf: 6 records | Batch: BATCH-20261029_052137-883053 | Created: 2026-10-29 05:22:17
+  20261029_052319_bhiya.pdf: 6 records | Batch: BATCH-20261029_052319-e239b0 | Created: 2026-10-29 05:24:00
+  20261029_052428_bhiya_2.pdf: 6 records | Batch: BATCH-20261029_052428-b3c404 | Created: 2026-10-29 05:25:09
+  ecc172c5326c4080a70f642be7fff3fb_farmers_demo_import.xlsx: 1 records | Batch: BATCH-LEGACY-ecc172c5326c4080a70f | Created: 2026-10-27 13:55:01
+
+--- 2. DISTRIBUTION BY UPLOAD BATCH ---
+  BATCH-LEGACY-4c6d29186a5840f3b14b: 18 records | Source: 4c6d29186a5840f3b14bc5f17240642c.pdf
+  BATCH-LEGACY-20261029_042225_test: 6 records | Source: 20261029_042225_test_upload_survey.pdf
+  BATCH-LEGACY-20261029_042334_test: 6 records | Source: 20261029_042334_test_upload_survey.pdf
+  BATCH-LEGACY-20261029_042422_test: 6 records | Source: 20261029_042422_test_upload_survey.pdf
+  BATCH-LEGACY-20261029_042901_test: 6 records | Source: 20261029_042901_test_upload_survey.pdf
+  BATCH-LEGACY-20261029_043319_bhiy: 6 records | Source: 20261029_043319_bhiya_2.pdf
+  BATCH-LEGACY-20261029_045247_test: 6 records | Source: 20261029_045247_test_upload_survey.pdf
+  BATCH-20261029_050646-8c5552: 6 records | Source: 20261029_050646_test_upload_survey.pdf
+  BATCH-20261029_051601-21514c: 6 records | Source: 20261029_051601_test_upload_survey.pdf
+  BATCH-20261029_051751-cbcc91: 6 records | Source: 20261029_051751_test_upload_survey.pdf
+  BATCH-20261029_052137-883053: 6 records | Source: 20261029_052137_bhiya_2.pdf
+  BATCH-20261029_052319-e239b0: 6 records | Source: 20261029_052319_bhiya.pdf
+  BATCH-20261029_052428-b3c404: 6 records | Source: 20261029_052428_bhiya_2.pdf
+  BATCH-LEGACY-ecc172c5326c4080a70f: 1 records | Source: ecc172c5326c4080a70f642be7fff3fb_farmers_demo_import.xlsx
+
+--- 3. STATUS DISTRIBUTION ---
+  needs_review: 48 records
+  pending_review: 40 records
+  verified: 3 records
+
+--- 4. DUPLICATE RECORDS (51) ---
+  - Count: 6 | Reason: मोबाईल क्रमांक 7029021960 आधीच नोंद #6 (AAG QSig Aa, वाळकी) मध्ये अस्तित्वात आहे.
+  - Count: 5 | Reason: मोबाईल क्रमांक 8788250195 आधीच नोंद #27 (2 RAH लाभात अ 6, गाव) मध्ये अस्तित्वात आहे.
+  - Count: 5 | Reason: मोबाईल क्रमांक 9284647609 आधीच नोंद #28 (1 3) लना जाला “1५ », गाव) मध्ये अस्तित्वात आहे.
+  - Count: 5 | Reason: मोबाईल क्रमांक 7499962620 आधीच नोंद #29 (RSI adig 4 ।7, गाव) मध्ये अस्तित्वात आहे.
+  - Count: 5 | Reason: मोबाईल क्रमांक 7096821260 आधीच नोंद #86 (1 ४111२५ ai Ape, वडगाव तांदळी) मध्ये अस्तित्वात आहे.; शेतकऱ्याचे नाव '1 ४111२५ ai Ape' आणि गाव 'वडगाव तांदळी' आधीच नोंद #86 मध्ये अस्तित्वात आहे.
+  - Count: 5 | Reason: मोबाईल क्रमांक 7682501150 आधीच नोंद #87 (2) HH रानात अ, वडगाव तांदळी) मध्ये अस्तित्वात आहे.; शेतकऱ्याचे नाव '2) HH रानात अ' आणि गाव 'वडगाव तांदळी' आधीच नोंद #87 मध्ये अस्तित्वात आहे.
+  - Count: 5 | Reason: मोबाईल क्रमांक 7525454649 आधीच नोंद #88 (लत याला < KO, वडगाव तांदळी) मध्ये अस्तित्वात आहे.; शेतकऱ्याचे नाव 'लत याला < KO' आणि गाव 'वडगाव तांदळी' आधीच नोंद #88 मध्ये अस्तित्वात आहे.
+  - Count: 5 | Reason: मोबाईल क्रमांक 7999626207 आधीच नोंद #89 (च्या क 2H, वडगाव तांदळी) मध्ये अस्तित्वात आहे.; शेतकऱ्याचे नाव 'च्या क 2H' आणि गाव 'वडगाव तांदळी' आधीच नोंद #89 मध्ये अस्तित्वात आहे.
+  - Count: 5 | Reason: मोबाईल क्रमांक 7702202196 आधीच नोंद #90 (AGE रु च्य, वडगाव तांदळी) मध्ये अस्तित्वात आहे.; शेतकऱ्याचे नाव 'AGE रु च्य' आणि गाव 'वडगाव तांदळी' आधीच नोंद #90 मध्ये अस्तित्वात आहे.
+  - Count: 5 | Reason: मोबाईल क्रमांक 7977221658 आधीच नोंद #91 (ला रार कमाल २., वडगाव तांदळी) मध्ये अस्तित्वात आहे.; शेतकऱ्याचे नाव 'ला रार कमाल २.' आणि गाव 'वडगाव तांदळी' आधीच नोंद #91 मध्ये अस्तित्वात आहे.
+
+--- 5. FARMER MOBILE CLUSTERING ---
+  Mobile 7029021960: appears 7 times across files:
+    - ID #6: AAG QSig Aa (File: 4c6d29186a5840f3b14bc5f1724064..., Batch: BATCH-LEGACY-4c6d29186a5840f3b...)
+    - ID #30: AMG GQBSig AI 7८ (File: 20261029_042225_test_upload_su..., Batch: BATCH-LEGACY-20261029_042225_t...)
+    - ID #37: AMG GQBSig AI 7८ (File: 20261029_042334_test_upload_su..., Batch: BATCH-LEGACY-20261029_042334_t...)
+    - ID #49: AMG GQBSig AI 7८ (File: 20261029_042422_test_upload_su..., Batch: BATCH-LEGACY-20261029_042422_t...)
+    - ID #61: AMG GQBSig AI 7८ (File: 20261029_042901_test_upload_su..., Batch: BATCH-LEGACY-20261029_042901_t...)
+    - ID #67: AMG GQBSig AI 7८ (File: 20261029_043319_bhiya_2.pdf..., Batch: BATCH-LEGACY-20261029_043319_b...)
+    - ID #79: AMG GQBSig AI 7८ (File: 20261029_045247_test_upload_su..., Batch: BATCH-LEGACY-20261029_045247_t...)
+  Mobile 8788250195: appears 6 times across files:
+    - ID #27: 2 RAH लाभात अ 6 (File: 20261029_042225_test_upload_su..., Batch: BATCH-LEGACY-20261029_042225_t...)
+    - ID #34: 2 RAH लाभात अ 6 (File: 20261029_042334_test_upload_su..., Batch: BATCH-LEGACY-20261029_042334_t...)
+    - ID #46: 2 RAH लाभात अ 6 (File: 20261029_042422_test_upload_su..., Batch: BATCH-LEGACY-20261029_042422_t...)
+    - ID #58: 2 RAH लाभात अ 6 (File: 20261029_042901_test_upload_su..., Batch: BATCH-LEGACY-20261029_042901_t...)
+    - ID #64: 2 RAH लाभात अ 6 (File: 20261029_043319_bhiya_2.pdf..., Batch: BATCH-LEGACY-20261029_043319_b...)
+    - ID #76: 2 RAH लाभात अ 6 (File: 20261029_045247_test_upload_su..., Batch: BATCH-LEGACY-20261029_045247_t...)
+  Mobile 9284647609: appears 6 times across files:
+    - ID #28: 1 3) लना जाला “1५ » (File: 20261029_042225_test_upload_su..., Batch: BATCH-LEGACY-20261029_042225_t...)
+    - ID #35: 1 3) लना जाला “1५ » (File: 20261029_042334_test_upload_su..., Batch: BATCH-LEGACY-20261029_042334_t...)
+    - ID #47: 1 3) लना जाला “1५ » (File: 20261029_042422_test_upload_su..., Batch: BATCH-LEGACY-20261029_042422_t...)
+    - ID #59: 1 3) लना जाला “1५ » (File: 20261029_042901_test_upload_su..., Batch: BATCH-LEGACY-20261029_042901_t...)
+    - ID #65: 1 3) लना जाला “1५ » (File: 20261029_043319_bhiya_2.pdf..., Batch: BATCH-LEGACY-20261029_043319_b...)
+    - ID #77: 1 3) लना जाला “1५ » (File: 20261029_045247_test_upload_su..., Batch: BATCH-LEGACY-20261029_045247_t...)
+  Mobile 7499962620: appears 6 times across files:
+    - ID #29: RSI adig 4 ।7 (File: 20261029_042225_test_upload_su..., Batch: BATCH-LEGACY-20261029_042225_t...)
+    - ID #36: RSI adig 4 ।7 (File: 20261029_042334_test_upload_su..., Batch: BATCH-LEGACY-20261029_042334_t...)
+    - ID #48: RSI adig 4 ।7 (File: 20261029_042422_test_upload_su..., Batch: BATCH-LEGACY-20261029_042422_t...)
+    - ID #60: RSI adig 4 ।7 (File: 20261029_042901_test_upload_su..., Batch: BATCH-LEGACY-20261029_042901_t...)
+    - ID #66: RSI adig 4 ।7 (File: 20261029_043319_bhiya_2.pdf..., Batch: BATCH-LEGACY-20261029_043319_b...)
+    - ID #78: RSI adig 4 ।7 (File: 20261029_045247_test_upload_su..., Batch: BATCH-LEGACY-20261029_045247_t...)
+  Mobile 7096821260: appears 6 times across files:
+    - ID #86: 1 ४111२५ ai Ape (File: 20261029_050646_test_upload_su..., Batch: BATCH-20261029_050646-8c5552...)
+    - ID #98: 1 ४111२५ ai Ape (File: 20261029_051601_test_upload_su..., Batch: BATCH-20261029_051601-21514c...)
+    - ID #110: 1 ४111२५ ai Ape (File: 20261029_051751_test_upload_su..., Batch: BATCH-20261029_051751-cbcc91...)
+    - ID #116: 1 ४111२५ ai Ape (File: 20261029_052137_bhiya_2.pdf..., Batch: BATCH-20261029_052137-883053...)
+    - ID #122: 1 ४111२५ ai Ape (File: 20261029_052319_bhiya.pdf..., Batch: BATCH-20261029_052319-e239b0...)
+    - ID #128: 1 ४111२५ ai Ape (File: 20261029_052428_bhiya_2.pdf..., Batch: BATCH-20261029_052428-b3c404...)
+  Mobile 7682501150: appears 6 times across files:
+    - ID #87: 2) HH रानात अ (File: 20261029_050646_test_upload_su..., Batch: BATCH-20261029_050646-8c5552...)
+    - ID #99: 2) HH रानात अ (File: 20261029_051601_test_upload_su..., Batch: BATCH-20261029_051601-21514c...)
+    - ID #111: 2) HH रानात अ (File: 20261029_051751_test_upload_su..., Batch: BATCH-20261029_051751-cbcc91...)
+    - ID #117: 2) HH रानात अ (File: 20261029_052137_bhiya_2.pdf..., Batch: BATCH-20261029_052137-883053...)
+    - ID #123: 2) HH रानात अ (File: 20261029_052319_bhiya.pdf..., Batch: BATCH-20261029_052319-e239b0...)
+    - ID #129: 2) HH रानात अ (File: 20261029_052428_bhiya_2.pdf..., Batch: BATCH-20261029_052428-b3c404...)
+  Mobile 7525454649: appears 6 times across files:
+    - ID #88: लत याला < KO (File: 20261029_050646_test_upload_su..., Batch: BATCH-20261029_050646-8c5552...)
+    - ID #100: लत याला < KO (File: 20261029_051601_test_upload_su..., Batch: BATCH-20261029_051601-21514c...)
+    - ID #112: लत याला < KO (File: 20261029_051751_test_upload_su..., Batch: BATCH-20261029_051751-cbcc91...)
+    - ID #118: लत याला < KO (File: 20261029_052137_bhiya_2.pdf..., Batch: BATCH-20261029_052137-883053...)
+    - ID #124: लत याला < KO (File: 20261029_052319_bhiya.pdf..., Batch: BATCH-20261029_052319-e239b0...)
+    - ID #130: लत याला < KO (File: 20261029_052428_bhiya_2.pdf..., Batch: BATCH-20261029_052428-b3c404...)
+  Mobile 7999626207: appears 6 times across files:
+    - ID #89: च्या क 2H (File: 20261029_050646_test_upload_su..., Batch: BATCH-20261029_050646-8c5552...)
+    - ID #101: च्या क 2H (File: 20261029_051601_test_upload_su..., Batch: BATCH-20261029_051601-21514c...)
+    - ID #113: च्या क 2H (File: 20261029_051751_test_upload_su..., Batch: BATCH-20261029_051751-cbcc91...)
+    - ID #119: च्या क 2H (File: 20261029_052137_bhiya_2.pdf..., Batch: BATCH-20261029_052137-883053...)
+    - ID #125: च्या क 2H (File: 20261029_052319_bhiya.pdf..., Batch: BATCH-20261029_052319-e239b0...)
+    - ID #131: च्या क 2H (File: 20261029_052428_bhiya_2.pdf..., Batch: BATCH-20261029_052428-b3c404...)
+  Mobile 7702202196: appears 6 times across files:
+    - ID #90: AGE रु च्य (File: 20261029_050646_test_upload_su..., Batch: BATCH-20261029_050646-8c5552...)
+    - ID #102: AGE रु च्य (File: 20261029_051601_test_upload_su..., Batch: BATCH-20261029_051601-21514c...)
+    - ID #114: AGE रु च्य (File: 20261029_051751_test_upload_su..., Batch: BATCH-20261029_051751-cbcc91...)
+    - ID #120: AGE रु च्य (File: 20261029_052137_bhiya_2.pdf..., Batch: BATCH-20261029_052137-883053...)
+    - ID #126: AGE रु च्य (File: 20261029_052319_bhiya.pdf..., Batch: BATCH-20261029_052319-e239b0...)
+    - ID #132: AGE रु च्य (File: 20261029_052428_bhiya_2.pdf..., Batch: BATCH-20261029_052428-b3c404...)
+  Mobile 7977221658: appears 6 times across files:
+    - ID #91: ला रार कमाल २. (File: 20261029_050646_test_upload_su..., Batch: BATCH-20261029_050646-8c5552...)
+    - ID #103: ला रार कमाल २. (File: 20261029_051601_test_upload_su..., Batch: BATCH-20261029_051601-21514c...)
+    - ID #115: ला रार कमाल २. (File: 20261029_051751_test_upload_su..., Batch: BATCH-20261029_051751-cbcc91...)
+    - ID #121: ला रार कमाल २. (File: 20261029_052137_bhiya_2.pdf..., Batch: BATCH-20261029_052137-883053...)
+    - ID #127: ला रार कमाल २. (File: 20261029_052319_bhiya.pdf..., Batch: BATCH-20261029_052319-e239b0...)
+    - ID #133: ला रार कमाल २. (File: 20261029_052428_bhiya_2.pdf..., Batch: BATCH-20261029_052428-b3c404...)
+  Mobile 8788250595: appears 2 times across files:
+    - ID #10: 2  RAK लाभात आ (File: 4c6d29186a5840f3b14bc5f1724064..., Batch: BATCH-LEGACY-4c6d29186a5840f3b...)
+    - ID #16: 2  RAK लाभात आ (File: 4c6d29186a5840f3b14bc5f1724064..., Batch: BATCH-LEGACY-4c6d29186a5840f3b...)
+  Mobile 8464948789: appears 2 times across files:
+    - ID #11: 1 उ) fetetl® stele  1 (File: 4c6d29186a5840f3b14bc5f1724064..., Batch: BATCH-LEGACY-4c6d29186a5840f3b...)
+    - ID #17: 1 उ) fetetl® stele  1 (File: 4c6d29186a5840f3b14bc5f1724064..., Batch: BATCH-LEGACY-4c6d29186a5840f3b...)
+  Mobile 7499626207: appears 2 times across files:
+    - ID #12: जाला adi¢ AR (File: 4c6d29186a5840f3b14bc5f1724064..., Batch: BATCH-LEGACY-4c6d29186a5840f3b...)
+    - ID #18: जाला adi¢ AR (File: 4c6d29186a5840f3b14bc5f1724064..., Batch: BATCH-LEGACY-4c6d29186a5840f3b...)
+  Mobile 7025021960: appears 2 times across files:
+    - ID #13: s)  AAG QSig A (File: 4c6d29186a5840f3b14bc5f1724064..., Batch: BATCH-LEGACY-4c6d29186a5840f3b...)
+    - ID #19: s)  AAG QSig A (File: 4c6d29186a5840f3b14bc5f1724064..., Batch: BATCH-LEGACY-4c6d29186a5840f3b...)
+
+--- 6. SAMPLE OF FIRST 15 RECORDS (IDs 1-15) ---
+  ID #1: Demo Farmer Three | Mob: 7777777777 | Village: Demo Village | File: ecc172c5326c4080a70f642be7fff3fb_farmers_demo_import.xlsx | Status: verified
+  ID #2: DARI ei SR | Mob:  | Village: वाळकी | File: 4c6d29186a5840f3b14bc5f17240642c.pdf | Status: verified
+  ID #3: 2  RAK लावाल आ | Mob: 8788250995 | Village: वाळकी | File: 4c6d29186a5840f3b14bc5f17240642c.pdf | Status: verified
+  ID #4: 1 उ) लता जाहा “1 | Mob: 9284648609 | Village: वाळकी | File: 4c6d29186a5840f3b14bc5f17240642c.pdf | Status: pending_review
+  ID #5: जायला gig 24 | Mob: 74999626207 | Village: वाळकी | File: 4c6d29186a5840f3b14bc5f17240642c.pdf | Status: pending_review
+  ID #6: AAG QSig Aa | Mob: 7029021960 | Village: वाळकी | File: 4c6d29186a5840f3b14bc5f17240642c.pdf | Status: pending_review
+  ID #7: 1 (खा करार कमाल eke | Mob: 7972214567 | Village: वाळकी | File: 4c6d29186a5840f3b14bc5f17240642c.pdf | Status: pending_review
+  ID #8: शेतकरी क्र. 1 | Mob:  | Village: वडगाव तांदळी | File: 4c6d29186a5840f3b14bc5f17240642c.pdf | Status: pending_review
+  ID #9: ४11121५ ei Se | Mob:  | Village: वडगाव तांदळी | File: 4c6d29186a5840f3b14bc5f17240642c.pdf | Status: pending_review
+  ID #10: 2  RAK लाभात आ | Mob: 8788250595 | Village: वडगाव तांदळी | File: 4c6d29186a5840f3b14bc5f17240642c.pdf | Status: pending_review
+  ID #11: 1 उ) fetetl® stele  1 | Mob: 8464948789 | Village: वडगाव तांदळी | File: 4c6d29186a5840f3b14bc5f17240642c.pdf | Status: pending_review
+  ID #12: जाला adi¢ AR | Mob: 7499626207 | Village: वडगाव तांदळी | File: 4c6d29186a5840f3b14bc5f17240642c.pdf | Status: pending_review
+  ID #13: s)  AAG QSig A | Mob: 7025021960 | Village: वडगाव तांदळी | File: 4c6d29186a5840f3b14bc5f17240642c.pdf | Status: pending_review
+  ID #14: शेतकरी क्र. 1 | Mob:  | Village: वडगाव तांदळी | File: 4c6d29186a5840f3b14bc5f17240642c.pdf | Status: pending_review
+  ID #15: ४11121५ ei Se | Mob:  | Village: वडगाव तांदळी | File: 4c6d29186a5840f3b14bc5f17240642c.pdf | Status: pending_review
+
+--- 7. SAMPLE OF LATEST 15 RECORDS ---
+  ID #119: च्या क 2H | Mob: 7999626207 | Village: वडगाव तांदळी | File: 20261029_052137_bhiya_2.pdf | Status: needs_review | Dup: 1
+  ID #120: AGE रु च्य | Mob: 7702202196 | Village: वडगाव तांदळी | File: 20261029_052137_bhiya_2.pdf | Status: needs_review | Dup: 1
+  ID #121: ला रार कमाल २. | Mob: 7977221658 | Village: वडगाव तांदळी | File: 20261029_052137_bhiya_2.pdf | Status: needs_review | Dup: 1
+  ID #122: 1 ४111२५ ai Ape | Mob: 7096821260 | Village: वडगाव तांदळी | File: 20261029_052319_bhiya.pdf | Status: needs_review | Dup: 1
+  ID #123: 2) HH रानात अ | Mob: 7682501150 | Village: वडगाव तांदळी | File: 20261029_052319_bhiya.pdf | Status: needs_review | Dup: 1
+  ID #124: लत याला < KO | Mob: 7525454649 | Village: वडगाव तांदळी | File: 20261029_052319_bhiya.pdf | Status: needs_review | Dup: 1
+  ID #125: च्या क 2H | Mob: 7999626207 | Village: वडगाव तांदळी | File: 20261029_052319_bhiya.pdf | Status: needs_review | Dup: 1
+  ID #126: AGE रु च्य | Mob: 7702202196 | Village: वडगाव तांदळी | File: 20261029_052319_bhiya.pdf | Status: needs_review | Dup: 1
+  ID #127: ला रार कमाल २. | Mob: 7977221658 | Village: वडगाव तांदळी | File: 20261029_052319_bhiya.pdf | Status: needs_review | Dup: 1
+  ID #128: 1 ४111२५ ai Ape | Mob: 7096821260 | Village: वडगाव तांदळी | File: 20261029_052428_bhiya_2.pdf | Status: needs_review | Dup: 1
+  ID #129: 2) HH रानात अ | Mob: 7682501150 | Village: वडगाव तांदळी | File: 20261029_052428_bhiya_2.pdf | Status: needs_review | Dup: 1
+  ID #130: लत याला < KO | Mob: 7525454649 | Village: वडगाव तांदळी | File: 20261029_052428_bhiya_2.pdf | Status: needs_review | Dup: 1
+  ID #131: च्या क 2H | Mob: 7999626207 | Village: वडगाव तांदळी | File: 20261029_052428_bhiya_2.pdf | Status: needs_review | Dup: 1
+  ID #132: AGE रु च्य | Mob: 7702202196 | Village: वडगाव तांदळी | File: 20261029_052428_bhiya_2.pdf | Status: needs_review | Dup: 1
+  ID #133: ला रार कमाल २. | Mob: 7977221658 | Village: वडगाव तांदळी | File: 20261029_052428_bhiya_2.pdf | Status: needs_review | Dup: 1

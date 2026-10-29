@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OCR Human Review ? Chara Survey</title>
+<style>
+body{font-family:Arial,sans-serif;max-width:1100px;margin:25px auto;padding:0 16px;background:#f4f6fa;color:#182033}
+.card{background:white;padding:20px;border:1px solid #ddd;border-radius:10px;margin:16px 0}
+label{display:block;font-weight:600;margin:9px 0 5px}
+textarea,input,select{box-sizing:border-box;width:100%;padding:10px;border:1px solid #ccd2dd;border-radius:5px}
+textarea{min-height:150px}
+button{background:#185abd;color:white;border:0;padding:11px 15px;border-radius:6px;cursor:pointer;margin:10px 8px 0 0}
+.notice{padding:12px;background:#fff4d6;border-radius:6px;overflow-wrap:anywhere}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.help{color:#505b70;font-size:14px}
+</style>
+</head>
+<body>
+<h1>OCR Human Review</h1>
+<p>Candidate file: {{ source_name }}</p>
+<p><a href="/">Main dashboard</a> | <a href="/upload">Upload document</a> | <a href="/farmers">Farmers dashboard</a></p>
+<p class="notice">Defaults: Taluka ???, Veterinary Hospital Ralegan, Revenue Circle Walki Bus. OCR suggestions ko original PDF se verify karein. Is page se Google Form submit nahi hota.</p>
+
+{% for record in records %}
+{% set rid = record.get('candidate_id', '') %}
+{% set saved = reviews.get(rid, {}) %}
+{% set fields = saved.get('farmer_fields') or prefill_fields.get(rid, {}) %}
+<div class="card">
+<h2>{{ record.get('source_file', rid) }}</h2>
+<p><b>Mobile candidates:</b> {{ record.get('mobile_candidates', [])|join(', ') or 'None detected' }}</p>
+{% if saved.get('stage_message') %}<p class="notice">{{ saved.get('stage_message') }}</p>{% endif %}
+
+<form method="post" action="/ocr-review">
+<input type="hidden" name="candidate_id" value="{{ rid }}">
+
+<h3>OCR text</h3>
+<label for="raw-{{ rid }}">Extracted text</label>
+<textarea id="raw-{{ rid }}" name="corrected_text" required>{{ saved.get('corrected_text', record.get('raw_text', '')) }}</textarea>
+
+<label for="status-{{ rid }}">Review status</label>
+<select id="status-{{ rid }}" name="status">
+<option value="pending" {% if saved.get('status','pending') == 'pending' %}selected{% endif %}>Pending</option>
+<option value="verified" {% if saved.get('status') == 'verified' %}selected{% endif %}>Verified by reviewer</option>
+<option value="needs_correction" {% if saved.get('status') == 'needs_correction' %}selected{% endif %}>Needs correction</option>
+</select>
+
+<label for="note-{{ rid }}">Reviewer note</label>
+<input id="note-{{ rid }}" name="note" value="{{ saved.get('note', '') }}">
+
+<h3>Farmer fields</h3>
+<p class="help">Blank ya doubtful details ko original PDF se verify karke bharo. Numbers guess mat karo.</p>
+<div class="grid">
+{% for field in field_names %}
+<div>
+<label for="{{ rid }}-{{ field }}">{{ field.replace('_', ' ').title() }}</label>
+<input id="{{ rid }}-{{ field }}" name="{{ field }}" value="{{ fields.get(field, '') }}">
+</div>
+{% endfor %}
+</div>
+<button type="submit" name="action" value="save_review">Save review only</button>
+<button type="submit" name="action" value="stage_farmer">Send to Farmer Pending Review</button>
+</form>
+</div>
+{% else %}<p>No OCR records found.</p>{% endfor %}
+</body>
+</html>

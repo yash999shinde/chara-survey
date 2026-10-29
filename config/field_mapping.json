@@ -1,0 +1,21 @@
+﻿{
+  "source_to_canonical": {
+    "अनुक्रमांक": "sr_no",
+    "गाव": "village_name",
+    "गावाचे नाव": "village_name",
+    "शेतकरी / पशुपालकाचे नाव": "farmer_name",
+    "शेतकऱ्याचे नाव": "farmer_name",
+    "मोबाईल": "mobile_number",
+    "मोबाईल क्रमांक": "mobile_number",
+    "गायी": "cattle_count",
+    "गायींची संख्या": "cattle_count",
+    "म्हशी": "buffalo_count",
+    "म्हशींची संख्या": "buffalo_count",
+    "दूध (लिटर/दिवस)": "daily_milk_litres",
+    "हिरवा चारा (टन)": "green_fodder_tonnes",
+    "मुरघास (टन)": "silage_tonnes",
+    "सुका चारा (टन)": "dry_fodder_tonnes",
+    "पाण्याची उपलब्धता": "water_availability",
+    "सिंचन उपलब्धता": "irrigation_availability"
+  }
+}

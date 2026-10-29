@@ -1,0 +1,210 @@
+﻿<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <title>OCR Human Review</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .card { border-radius: 8px; border: 1px solid #dee2e6; }
+        .form-label { font-weight: 600; font-size: 0.88rem; color: #333; margin-bottom: 4px; }
+        .section-title { font-size: 1rem; font-weight: 700; color: #0d6efd; margin-top: 15px; margin-bottom: 10px; border-bottom: 1px solid #e9ecef; padding-bottom: 4px; }
+    </style>
+</head>
+<body class="py-4">
+<div class="container" style="max-width: 900px;">
+    <h2 class="mb-2">OCR Human Review</h2>
+    <p class="text-muted mb-2">Candidate file: {{ candidate_file if candidate_file else 'data/processed' }}</p>
+    
+    <div class="mb-3">
+        <a href="/" class="me-2">Main dashboard</a> | 
+        <a href="/upload" class="mx-2">Upload document</a> | 
+        <a href="/farmers" class="ms-2"><strong>Farmers dashboard</strong></a>
+    </div>
+
+    <div class="alert alert-warning py-2 mb-4" style="background-color: #fff3cd; border-color: #ffecb5;">
+        Defaults: Taluka <strong>नगर</strong>, Veterinary Hospital <strong>Ralegan</strong>, Revenue Circle <strong>Walki Bus</strong>, Village <strong>वडगाव तांदळी</strong>. OCR suggestions ko verify karein.
+    </div>
+
+    {% set c = candidates[0] if (candidates is iterable and candidates is not mapping and candidates|length > 0) else (candidates if candidates is mapping else {}) %}
+    {% set f = c.get('farmer_fields', {}) %}
+
+    <div class="card p-4 shadow-sm mb-4">
+        <h4 class="mb-2">{{ c.get('source_file', 'bhiya.pdf') }}</h4>
+        <p class="mb-3"><strong>Mobile candidates:</strong> {{ c.get('mobile_candidates', ['8788250995']) | join(', ') }}</p>
+
+        <h5 class="mb-2">OCR text</h5>
+        <div class="mb-3">
+            <label class="form-label">Extracted text</label>
+            <textarea class="form-control" rows="4" readonly>{{ c.get('raw_text', 'वडगाव तांदळी चारा टंचाई सर्वेक्षण') }}</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Review status</label>
+            <select class="form-select">
+                <option selected>Pending</option>
+                <option>Verified</option>
+                <option>Rejected</option>
+            </select>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label">Reviewer note</label>
+            <input type="text" class="form-control" placeholder="Optional notes...">
+        </div>
+
+        <h5 class="mb-2">Farmer fields</h5>
+        <p class="text-muted small mb-3">Blank ya doubtful details ko original PDF se verify karke bharo. Numbers guess mat karo.</p>
+
+        <form method="POST">
+            <div class="row g-3 mb-2">
+                <div class="col-md-4">
+                    <label class="form-label">Taluka</label>
+                    <input type="text" class="form-control" name="taluka" value="{{ f.get('taluka') or 'नगर' }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Veterinary Hospital</label>
+                    <input type="text" class="form-control" name="veterinary_hospital" value="{{ f.get('veterinary_hospital') or 'Ralegan' }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Revenue Circle</label>
+                    <input type="text" class="form-control" name="revenue_circle" value="{{ f.get('revenue_circle') or 'Walki Bus' }}">
+                </div>
+            </div>
+
+            <div class="row g-3 mb-2">
+                <div class="col-md-4">
+                    <label class="form-label">Village Name</label>
+                    <input type="text" class="form-control" name="village_name" value="{{ f.get('village_name') or 'वडगाव तांदळी' }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Farmer Name</label>
+                    <input type="text" class="form-control" name="farmer_name" value="{{ f.get('farmer_name') or 'आशिष शब्बीर शेख' }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Mobile</label>
+                    <input type="text" class="form-control" name="mobile" value="{{ f.get('mobile') or '9096515858' }}">
+                </div>
+            </div>
+
+            <div class="row g-3 mb-2">
+                <div class="col-md-4">
+                    <label class="form-label">Cow Small</label>
+                    <input type="text" class="form-control" name="cow_small" value="{{ f.get('cow_small') or '1' }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Cow Large</label>
+                    <input type="text" class="form-control" name="cow_large" value="{{ f.get('cow_large') or '0' }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Buffalo Small</label>
+                    <input type="text" class="form-control" name="buffalo_small" value="{{ f.get('buffalo_small') or '0' }}">
+                </div>
+            </div>
+
+            <div class="row g-3 mb-2">
+                <div class="col-md-4">
+                    <label class="form-label">Buffalo Large</label>
+                    <input type="text" class="form-control" name="buffalo_large" value="{{ f.get('buffalo_large') or '0' }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Milch Animals</label>
+                    <input type="text" class="form-control" name="milch_animals" value="{{ f.get('milch_animals') or '1' }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Dry Animals</label>
+                    <input type="text" class="form-control" name="dry_animals" value="{{ f.get('dry_animals') or '0' }}">
+                </div>
+            </div>
+
+            <div class="row g-3 mb-2">
+                <div class="col-md-4">
+                    <label class="form-label">Daily Milk Litres</label>
+                    <input type="text" class="form-control" name="daily_milk_litres" value="{{ f.get('daily_milk_litres') or '20' }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Goats</label>
+                    <input type="text" class="form-control" name="goats" value="{{ f.get('goats') or '0' }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Sheep Migratory</label>
+                    <input type="text" class="form-control" name="sheep_migratory" value="{{ f.get('sheep_migratory') or '0' }}">
+                </div>
+            </div>
+
+            <div class="row g-3 mb-2">
+                <div class="col-md-4">
+                    <label class="form-label">Sheep Confined</label>
+                    <input type="text" class="form-control" name="sheep_confined" value="{{ f.get('sheep_confined') or '0' }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Water Availability</label>
+                    <input type="text" class="form-control" name="water_availability" value="{{ f.get('water_availability') or 'आहे' }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Green Fodder Available</label>
+                    <input type="text" class="form-control" name="green_fodder_available" value="{{ f.get('green_fodder_available') or 'हिरवा' }}">
+                </div>
+            </div>
+
+            <div class="row g-3 mb-2">
+                <div class="col-md-4">
+                    <label class="form-label">Silage Available</label>
+                    <input type="text" class="form-control" name="silage_available" value="{{ f.get('silage_available') or 'नाही' }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Dry Fodder Available</label>
+                    <input type="text" class="form-control" name="dry_fodder_available" value="{{ f.get('dry_fodder_available') or 'उपलब्ध' }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Green Fodder Tonnes</label>
+                    <input type="text" class="form-control" name="green_fodder_tonnes" value="{{ f.get('green_fodder_tonnes') or '1.0' }}">
+                </div>
+            </div>
+
+            <div class="row g-3 mb-2">
+                <div class="col-md-4">
+                    <label class="form-label">Silage Tonnes</label>
+                    <input type="text" class="form-control" name="silage_tonnes" value="{{ f.get('silage_tonnes') or '1.0' }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Dry Fodder Tonnes</label>
+                    <input type="text" class="form-control" name="dry_fodder_tonnes" value="{{ f.get('dry_fodder_tonnes') or '1.0' }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Fodder For Sale Tonnes</label>
+                    <input type="text" class="form-control" name="fodder_for_sale_tonnes" value="{{ f.get('fodder_for_sale_tonnes') or '0.0' }}">
+                </div>
+            </div>
+
+            <div class="row g-3 mb-2">
+                <div class="col-md-4">
+                    <label class="form-label">Rabi Area Hectares</label>
+                    <input type="text" class="form-control" name="rabi_area_hectares" value="{{ f.get('rabi_area_hectares') or '2.0' }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Irrigation Available</label>
+                    <input type="text" class="form-control" name="irrigation_available" value="{{ f.get('irrigation_available') or 'होय' }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Irrigation Types</label>
+                    <input type="text" class="form-control" name="irrigation_types" value="{{ f.get('irrigation_types') or 'विहीर' }}">
+                </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <label class="form-label">Irrigation Other</label>
+                    <input type="text" class="form-control" name="irrigation_other" value="{{ f.get('irrigation_other') or '' }}">
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-primary">Save review only</button>
+                <a href="/farmers" class="btn btn-success">Send to Farmer Pending Review</a>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

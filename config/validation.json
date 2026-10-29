@@ -1,0 +1,36 @@
+﻿{
+  "required_fields": [
+    "farmer_name"
+  ],
+  "defaults": {
+    "taluka": "नगर",
+    "veterinary_hospital": "Ralegun",
+    "revenue_circle": "Walki"
+  },
+  "mobile_regex": "^[6-9][0-9]{9}$",
+  "numeric_fields": [
+    "cattle_count",
+    "buffalo_count",
+    "daily_milk_litres",
+    "green_fodder_tonnes",
+    "silage_tonnes",
+    "dry_fodder_tonnes"
+  ],
+  "integer_fields": [
+    "cattle_count",
+    "buffalo_count"
+  ],
+  "allowed_values": {
+    "water_availability": [
+      "उपलब्ध",
+      "अपुरे",
+      "नाही",
+      "अज्ञात"
+    ],
+    "irrigation_availability": [
+      "आहे",
+      "नाही",
+      "उपलब्ध"
+    ]
+  }
+}

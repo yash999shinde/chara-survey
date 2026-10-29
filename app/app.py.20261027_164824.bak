@@ -1,0 +1,413 @@
+from __future__ import annotations
+
+import sys
+from pathlib import Path as _BootstrapPath
+
+_PROJECT_ROOT = _BootstrapPath(__file__).resolve().parents[1]
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
+
+from flask import request
+from werkzeug.utils import secure_filename
+import uuid
+import shutil
+
+
+import csv
+import io
+import json
+import sqlite3
+from datetime import datetime, timezone
+from pathlib import Path
+
+from flask import (
+    Flask,
+    abort,
+    redirect,
+    render_template,
+    request,
+    Response,
+    send_file,
+    url_for,
+)
+from openpyxl import Workbook
+
+ROOT = Path(__file__).resolve().parent.parent
+REPORT_DIR = ROOT / "data" / "reports"
+DB_PATH = ROOT / "data" / "review.db"
+
+app = Flask(__name__)
+
+
+def connect_db():
+    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+    db = sqlite3.connect(DB_PATH)
+    db.row_factory = sqlite3.Row
+    return db
+
+
+def init_db():
+    with connect_db() as db:
+        db.execute("""
+            CREATE TABLE IF NOT EXISTS reviews (
+                source_file TEXT NOT NULL,
+                record_id TEXT NOT NULL,
+                record_json TEXT NOT NULL,
+                original_status TEXT NOT NULL,
+                decision TEXT,
+                reviewer_note TEXT NOT NULL DEFAULT '',
+                updated_at TEXT,
+                PRIMARY KEY (source_file, record_id)
+            )
+        """)
+
+
+def import_latest_report():
+    reports = sorted(
+        REPORT_DIR.glob("*_dry_run.csv"),
+        key=lambda path: path.stat().st_mtime,
+        reverse=True,
+    )
+
+    if not reports:
+        return
+
+    source = reports[0]
+
+    with source.open(
+        "r",
+        encoding="utf-8-sig",
+        newline="",
+    ) as file:
+        rows = list(csv.DictReader(file))
+
+    with connect_db() as db:
+        for row in rows:
+            record_id = (row.get("record_id") or "").strip()
+
+            if not record_id:
+                continue
+
+            # Never overwrite an existing review decision.
+            db.execute("""
+                INSERT OR IGNORE INTO reviews (
+                    source_file,
+                    record_id,
+                    record_json,
+                    original_status
+                )
+                VALUES (?, ?, ?, ?)
+            """, (
+                source.name,
+                record_id,
+                json.dumps(row, ensure_ascii=False),
+                row.get("status", "needs_review"),
+            ))
+
+
+@app.get("/")
+def index():
+    import_latest_report()
+
+    selected_status = request.args.get("status", "all")
+
+    with connect_db() as db:
+        rows = db.execute("""
+            SELECT *
+            FROM reviews
+            ORDER BY source_file, record_id
+        """).fetchall()
+
+    records = []
+
+    for row in rows:
+        record = dict(row)
+        record["fields"] = json.loads(record["record_json"])
+        record["display_status"] = (
+            record["decision"] or record["original_status"]
+        )
+
+        if (
+            selected_status == "all"
+            or record["display_status"] == selected_status
+        ):
+            records.append(record)
+
+    counts = {
+        "total": len(rows),
+        "pending": sum(row["decision"] is None for row in rows),
+        "verified": sum(
+            row["decision"] == "verified" for row in rows
+        ),
+        "needs_review": sum(
+            row["decision"] == "needs_review"
+            or (
+                row["decision"] is None
+                and row["original_status"] == "needs_review"
+            )
+            for row in rows
+        ),
+    }
+
+    return render_template(
+        "index.html",
+        records=records,
+        counts=counts,
+        selected_status=selected_status,
+    )
+
+
+@app.post("/review")
+def review():
+    source_file = request.form.get("source_file", "")
+    record_id = request.form.get("record_id", "")
+    decision = request.form.get("decision", "")
+    note = request.form.get("reviewer_note", "").strip()[:1000]
+
+    if decision not in {"verified", "needs_review"}:
+        abort(400, "Invalid review decision.")
+
+    with connect_db() as db:
+        result = db.execute("""
+            UPDATE reviews
+            SET decision = ?,
+                reviewer_note = ?,
+                updated_at = ?
+            WHERE source_file = ? AND record_id = ?
+        """, (
+            decision,
+            note,
+            datetime.now(timezone.utc).isoformat(),
+            source_file,
+            record_id,
+        ))
+
+        if result.rowcount != 1:
+            abort(404, "Record not found.")
+
+    return redirect(url_for("index"))
+
+
+@app.get("/export")
+def export_csv():
+    with connect_db() as db:
+        rows = db.execute("""
+            SELECT source_file, record_id, record_json,
+                   original_status, decision, reviewer_note, updated_at
+            FROM reviews
+            ORDER BY source_file, record_id
+        """).fetchall()
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+
+    writer.writerow([
+        "source_file",
+        "record_id",
+        "original_status",
+        "review_decision",
+        "reviewer_note",
+        "updated_at",
+        "record_data_json",
+    ])
+
+    for row in rows:
+        writer.writerow([
+            row["source_file"],
+            row["record_id"],
+            row["original_status"],
+            row["decision"] or "",
+            row["reviewer_note"],
+            row["updated_at"] or "",
+            row["record_json"],
+        ])
+
+    return Response(
+        "\ufeff" + output.getvalue(),
+        mimetype="text/csv; charset=utf-8",
+        headers={
+            "Content-Disposition":
+                "attachment; filename=chara_survey_review.csv"
+        },
+    )
+
+
+@app.get("/export.xlsx")
+def export_excel():
+    with connect_db() as db:
+        rows = db.execute("""
+            SELECT source_file, record_id, record_json,
+                   original_status, decision, reviewer_note, updated_at
+            FROM reviews
+            ORDER BY source_file, record_id
+        """).fetchall()
+
+    workbook = Workbook()
+    sheet = workbook.active
+    sheet.title = "Survey Review"
+
+    sheet.append([
+        "Source File",
+        "Record ID",
+        "Original Status",
+        "Review Decision",
+        "Reviewer Note",
+        "Updated At",
+        "Record Data JSON",
+    ])
+
+    for row in rows:
+        sheet.append([
+            row["source_file"],
+            row["record_id"],
+            row["original_status"],
+            row["decision"] or "",
+            row["reviewer_note"],
+            row["updated_at"] or "",
+            row["record_json"],
+        ])
+
+    output = io.BytesIO()
+    workbook.save(output)
+    output.seek(0)
+
+    return send_file(
+        output,
+        as_attachment=True,
+        download_name="chara_survey_review.xlsx",
+        mimetype=(
+            "application/vnd.openxmlformats-officedocument."
+            "spreadsheetml.sheet"
+        ),
+    )
+
+
+init_db()
+
+
+
+# Document upload: files are stored locally; no external submission occurs.
+UPLOAD_DIR = Path(__file__).resolve().parents[1] / "data" / "uploads"
+OCR_OUTPUT_DIR = Path(__file__).resolve().parents[1] / "data" / "ocr_output"
+ALLOWED_UPLOAD_EXTENSIONS = {".pdf", ".png", ".jpg", ".jpeg", ".tif", ".tiff", ".bmp"}
+
+app.config["MAX_CONTENT_LENGTH"] = 15 * 1024 * 1024
+
+
+@app.route("/upload", methods=["GET", "POST"])
+def upload_document():
+    UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+    OCR_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
+    if request.method == "GET":
+        return render_template("upload.html")
+
+    uploaded = request.files.get("document")
+    if uploaded is None or not uploaded.filename:
+        return render_template(
+            "upload.html", error="Please select a PDF or image file."
+        ), 400
+
+    safe_name = secure_filename(uploaded.filename)
+    extension = Path(safe_name).suffix.lower()
+
+    if not safe_name or extension not in ALLOWED_UPLOAD_EXTENSIONS:
+        return render_template(
+            "upload.html",
+            error="Unsupported file type. Choose a PDF or supported image."
+        ), 400
+
+    stored_name = f"{uuid.uuid4().hex}{extension}"
+    destination = UPLOAD_DIR / stored_name
+    uploaded.save(destination)
+
+    try:
+        from ingestion.ocr_engine import extract_text
+
+        result = extract_text(destination, language="mar+eng")
+        text_path = OCR_OUTPUT_DIR / f"{Path(stored_name).stem}.txt"
+        text_path.write_text(result["full_text"], encoding="utf-8")
+
+        return render_template(
+            "upload.html",
+            message="Upload and OCR completed. Review the extracted text before using it.",
+            uploaded_name=safe_name,
+            extracted_text=result["full_text"],
+            page_count=result["page_count"],
+        )
+    except Exception as exc:
+        # Keep the uploaded file for later processing; do not discard it.
+        return render_template(
+            "upload.html",
+            message="File saved locally, but OCR could not run yet.",
+            uploaded_name=safe_name,
+            error=str(exc),
+        )
+
+
+@app.errorhandler(413)
+def upload_too_large(_error):
+    return render_template(
+        "upload.html",
+        error="File is too large. Maximum upload size is 15 MB."
+    ), 413
+
+
+
+
+@app.route("/ocr-review", methods=["GET", "POST"])
+def ocr_review_dashboard():
+    import json
+    from pathlib import Path
+    from flask import request
+
+    processed_dir = Path(__file__).resolve().parents[1] / "data" / "processed"
+    processed_dir.mkdir(parents=True, exist_ok=True)
+
+    files = sorted(
+        processed_dir.glob("*_candidates.json"),
+        key=lambda f: f.stat().st_mtime,
+        reverse=True,
+    )
+    if not files:
+        return "No OCR candidate file found.", 404
+
+    candidate_file = files[0]
+    records = json.loads(candidate_file.read_text(encoding="utf-8"))
+    review_file = processed_dir / f"{candidate_file.stem}_review.json"
+    reviews = json.loads(review_file.read_text(encoding="utf-8")) if review_file.exists() else {}
+
+    if request.method == "POST":
+        rid = request.form.get("candidate_id", "")
+        if rid not in {str(r.get("candidate_id", "")) for r in records}:
+            return "Unknown candidate ID.", 400
+
+        status = request.form.get("status", "pending")
+        if status not in {"pending", "verified", "needs_correction"}:
+            status = "pending"
+
+        reviews[rid] = {
+            "status": status,
+            "corrected_text": request.form.get("corrected_text", ""),
+            "note": request.form.get("note", ""),
+        }
+        review_file.write_text(
+            json.dumps(reviews, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+        return redirect(url_for("ocr_review_dashboard"))
+
+    return render_template(
+        "ocr_review.html",
+        records=records,
+        reviews=reviews,
+        source_name=candidate_file.name,
+    )
+
+
+if __name__ == "__main__":
+    app.run(
+        host="127.0.0.1",
+        port=5000,
+        debug=False,
+    )

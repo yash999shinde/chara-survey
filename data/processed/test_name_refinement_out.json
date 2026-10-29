@@ -1,0 +1,44 @@
+[
+  {
+    "raw_name": "डत 1२ ६ न( < नभ",
+    "suggested_name": "डत 1२ ६ न( < नभ",
+    "confidence": 0.3,
+    "refinements": []
+  },
+  {
+    "raw_name": "समान जाबाल शग",
+    "suggested_name": "समान जमाल शग",
+    "confidence": 0.42,
+    "refinements": [
+      "जाबाल->जमाल (66%)"
+    ]
+  },
+  {
+    "raw_name": "ल॑न ७ जनास राख",
+    "suggested_name": "ल॑न ७ जनास राख",
+    "confidence": 0.3,
+    "refinements": []
+  },
+  {
+    "raw_name": "श्गाह्य रगवा शाक",
+    "suggested_name": "श्गाह्य रगवा शाक",
+    "confidence": 0.3,
+    "refinements": []
+  },
+  {
+    "raw_name": "वाव रुबाब श ख",
+    "suggested_name": "वाव रुबाब श ख",
+    "confidence": 0.48,
+    "refinements": [
+      "रुबाब->रुबाब (100%)"
+    ]
+  },
+  {
+    "raw_name": "शार माल राख",
+    "suggested_name": "शार जमाल राख",
+    "confidence": 0.49,
+    "refinements": [
+      "माल->जमाल (85%)"
+    ]
+  }
+]

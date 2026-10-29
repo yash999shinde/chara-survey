@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <title>OCR Human Review - चारा सर्वेक्षण</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .card { border-radius: 10px; border: none; }
+        .form-label { font-weight: 600; font-size: 0.9rem; color: #333; }
+        .section-header { font-size: 1.1rem; font-weight: 700; color: #1f497d; border-bottom: 2px solid #e9ecef; padding-bottom: 6px; margin-top: 15px; margin-bottom: 12px; }
+    </style>
+</head>
+<body class="py-4">
+<div class="container" style="max-width: 950px;">
+    
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">OCR Human Review</h2>
+        <div>
+            <a href="/farmers" class="btn btn-outline-primary me-2">Farmers Dashboard</a>
+            <a href="/upload" class="btn btn-outline-secondary">Upload Document</a>
+        </div>
+    </div>
+    
+    <div class="alert alert-info py-2">
+        मूळ PDF / कागदपत्राशी पडताळणी करून फॉर्म सेव्ह किंवा सबमिट करा.
+    </div>
+
+    {% set c = candidates[0] if (candidates is iterable and candidates is not mapping and candidates|length > 0) else (candidates if candidates is mapping else {}) %}
+    {% set f = c.get('farmer_fields', {}) %}
+
+    <div class="card shadow-sm p-4 mb-4">
+        <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+            <h4 class="mb-0 text-primary">{{ c.get('source_file', 'survey_document.pdf') }}</h4>
+            <span class="badge bg-secondary">Mobile Candidates: {{ c.get('mobile_candidates', []) | join(', ') }}</span>
+        </div>
+
+        <form method="POST" action="">
+            <div class="section-header">१. प्रशासकीय माहिती</div>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">तालुका</label>
+                    <input type="text" class="form-control" name="taluka" value="{{ f.get('taluka', '') }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">पशुवैद्यकीय चिकित्सालय</label>
+                    <input type="text" class="form-control" name="veterinary_hospital" value="{{ f.get('veterinary_hospital', '') }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">महसूल मंडळ</label>
+                    <input type="text" class="form-control" name="revenue_circle" value="{{ f.get('revenue_circle', '') }}">
+                </div>
+            </div>
+
+            <div class="section-header">२. शेतकरी माहिती</div>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">गावाचे नाव</label>
+                    <input type="text" class="form-control" name="village_name" value="{{ f.get('village_name', '') }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">पशुपालकाचे / शेतकऱ्याचे नाव</label>
+                    <input type="text" class="form-control" name="farmer_name" value="{{ f.get('farmer_name', '') }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">मोबाईल क्रमांक</label>
+                    <input type="text" class="form-control" name="mobile" value="{{ f.get('mobile', '') }}">
+                </div>
+            </div>
+
+            <div class="section-header">३. जनावरांची संख्या व दूध उत्पादन</div>
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">लहान गायी</label>
+                    <input type="number" class="form-control" name="cow_small" value="{{ f.get('cow_small', 0) }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">मोठ्या गायी</label>
+                    <input type="number" class="form-control" name="cow_large" value="{{ f.get('cow_large', 0) }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">लहान म्हशी</label>
+                    <input type="number" class="form-control" name="buffalo_small" value="{{ f.get('buffalo_small', 0) }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">मोठ्या म्हशी</label>
+                    <input type="number" class="form-control" name="buffalo_large" value="{{ f.get('buffalo_large', 0) }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">दुभती जनावरे</label>
+                    <input type="number" class="form-control" name="milch_animals" value="{{ f.get('milch_animals', 0) }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">भाकड जनावरे</label>
+                    <input type="number" class="form-control" name="dry_animals" value="{{ f.get('dry_animals', 0) }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">दूध (लिटर प्रति दिन)</label>
+                    <input type="number" step="0.1" class="form-control" name="daily_milk_litres" value="{{ f.get('daily_milk_litres', 0.0) }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">शेळ्या</label>
+                    <input type="number" class="form-control" name="goats" value="{{ f.get('goats', 0) }}">
+                </div>
+            </div>
+
+            <div class="section-header">४. चारा व सिंचन उपलब्धता</div>
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">पाणी उपलब्धता</label>
+                    <input type="text" class="form-control" name="water_availability" value="{{ f.get('water_availability', '') }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">हिरवा चारा (टन)</label>
+                    <input type="number" step="0.1" class="form-control" name="green_fodder_tonnes" value="{{ f.get('green_fodder_tonnes', 0.0) }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">मुरघास (टन)</label>
+                    <input type="number" step="0.1" class="form-control" name="silage_tonnes" value="{{ f.get('silage_tonnes', 0.0) }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">सुका चारा (टन)</label>
+                    <input type="number" step="0.1" class="form-control" name="dry_fodder_tonnes" value="{{ f.get('dry_fodder_tonnes', 0.0) }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">सिंचन सुविधा</label>
+                    <input type="text" class="form-control" name="irrigation_available" value="{{ f.get('irrigation_available', '') }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">सिंचनाचा प्रकार</label>
+                    <input type="text" class="form-control" name="irrigation_types" value="{{ f.get('irrigation_types', '') }}">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">रबी क्षेत्र (हेक्टर)</label>
+                    <input type="number" step="0.1" class="form-control" name="rabi_area_hectares" value="{{ f.get('rabi_area_hectares', 0.0) }}">
+                </div>
+            </div>
+
+            <div class="mt-4 pt-2 border-top d-flex gap-2">
+                <a href="/farmers" class="btn btn-primary px-4">Farmers Dashboard पहा</a>
+                <button type="submit" class="btn btn-outline-success px-4">Save Review</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

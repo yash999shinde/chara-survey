@@ -1,0 +1,784 @@
+[
+  {
+    "title": "१. प्राथमिक माहिती",
+    "entry_id": null,
+    "options": []
+  },
+  {
+    "title": "तालुका",
+    "entry_id": "entry.504627010",
+    "options": [
+      "अकोले",
+      "जामखेड",
+      "कर्जत",
+      "कोपरगाव",
+      "नगर",
+      "नेवासा",
+      "पारनेर",
+      "पाथर्डी",
+      "राहाता",
+      "राहुरी",
+      "शेवगाव",
+      "श्रीगोंदा",
+      "श्रीरामपूर",
+      "संगमनेर"
+    ]
+  },
+  {
+    "title": "अकोले - स्थानिक माहिती",
+    "entry_id": null,
+    "options": []
+  },
+  {
+    "title": "पशुवैद्यकीय चिकित्सालय",
+    "entry_id": "entry.1901681694",
+    "options": [
+      "Akole",
+      "Rajur",
+      "Brahamanwada",
+      "Deogaon",
+      "Indori",
+      "Kotul",
+      "Nimbral",
+      "Samsherpur",
+      "Shendi",
+      "Vita",
+      "Abitkhind",
+      "Belapur",
+      "Chas",
+      "Kalas",
+      "Katalapur",
+      "Khadkikh",
+      "Khirwire",
+      "Kohane",
+      "Lahvalikotul",
+      "Lingadev",
+      "Mehanduri",
+      "Mhaladevi",
+      "Mograss",
+      "Pimpalgaon",
+      "Shirpunje",
+      "Tirade",
+      "Virgaon",
+      "Waranghusi"
+    ]
+  },
+  {
+    "title": "महसूल मंडळ",
+    "entry_id": "entry.1576649686",
+    "options": [
+      "Akole",
+      "Virgaon",
+      "Samsherpur",
+      "Sakirwadi",
+      "Rajur",
+      "Shendi",
+      "Kotul",
+      "Bramhanwada",
+      "Waki",
+      "Rumbhodi",
+      "Khirvire",
+      "Lingdev"
+    ]
+  },
+  {
+    "title": "जामखेड - स्थानिक माहिती",
+    "entry_id": null,
+    "options": []
+  },
+  {
+    "title": "पशुवैद्यकीय चिकित्सालय",
+    "entry_id": "entry.110795366",
+    "options": [
+      "Jamkhed",
+      "Kharda",
+      "Nannaj",
+      "Arangaon",
+      "Dighol",
+      "Halgaon",
+      "Jategaon",
+      "Jawala",
+      "Naygaon",
+      "Sonegaon"
+    ]
+  },
+  {
+    "title": "महसूल मंडळ",
+    "entry_id": "entry.1944362213",
+    "options": [
+      "Jamkhed",
+      "Arangaon",
+      "Kharda",
+      "Nannaj",
+      "Naygaon",
+      "Patoda",
+      "Sakat"
+    ]
+  },
+  {
+    "title": "कर्जत - स्थानिक माहिती",
+    "entry_id": null,
+    "options": []
+  },
+  {
+    "title": "पशुवैद्यकीय चिकित्सालय",
+    "entry_id": "entry.95620191",
+    "options": [
+      "Bhambora",
+      "Karjat",
+      "Mirajgaon",
+      "Rashin",
+      "Ambaijalgaon",
+      "Chapadgaon",
+      "Kombhali",
+      "Kuldharan",
+      "Mahijalgaon",
+      "Nimgaongangarda",
+      "Shinde"
+    ]
+  },
+  {
+    "title": "महसूल मंडळ",
+    "entry_id": "entry.2072918439",
+    "options": [
+      "Karjat",
+      "Rashin",
+      "Bambhora",
+      "Kombhali",
+      "Mirajgaon",
+      "Mahi",
+      "Kuldharan",
+      "Walwad",
+      "Khed",
+      "Koregaon"
+    ]
+  },
+  {
+    "title": "कोपरगाव - स्थानिक माहिती",
+    "entry_id": null,
+    "options": []
+  },
+  {
+    "title": "पशुवैद्यकीय चिकित्सालय",
+    "entry_id": "entry.41586684",
+    "options": [
+      "Kopargaon",
+      "Kolpewadi",
+      "Pohegaonbk.",
+      "Rawande",
+      "Chasnali",
+      "Dahegaon",
+      "Dhamori",
+      "Ranjangaon",
+      "Samvatsar",
+      "Wari",
+      "Yesgaon"
+    ]
+  },
+  {
+    "title": "महसूल मंडळ",
+    "entry_id": "entry.662538983",
+    "options": [
+      "Kopargaon",
+      "Rawande",
+      "Suregaon",
+      "Dahigaon",
+      "Pohegaon",
+      "Kokamthan"
+    ]
+  },
+  {
+    "title": "नगर - स्थानिक माहिती",
+    "entry_id": null,
+    "options": []
+  },
+  {
+    "title": "पशुवैद्यकीय चिकित्सालय",
+    "entry_id": "entry.329100902",
+    "options": [
+      "Ahilyanagar",
+      "Chichondipatil",
+      "Gundegaon",
+      "Higangaon",
+      "Jehur",
+      "Walki",
+      "Akolner",
+      "Chas",
+      "Dehare",
+      "Deulgaon",
+      "Hivarebajar",
+      "Kharekarjun",
+      "Narayan",
+      "Pimpalgaon malvi",
+      "Pimpalgaon landga",
+      "Ralegun",
+      "Ruichhatisi",
+      "Sarolakasar",
+      "Shendi",
+      "Takali"
+    ]
+  },
+  {
+    "title": "महसूल मंडळ",
+    "entry_id": "entry.1449625859",
+    "options": [
+      "Nalegaon",
+      "Sawedi",
+      "Kapurwadi",
+      "Kedgaon",
+      "Bhingar",
+      "Nagapur",
+      "Jewur",
+      "Chinchodi",
+      "Walki",
+      "Chaas",
+      "Ruichhattisi",
+      "Nepti"
+    ]
+  },
+  {
+    "title": "नेवासा - स्थानिक माहिती",
+    "entry_id": null,
+    "options": []
+  },
+  {
+    "title": "पशुवैद्यकीय चिकित्सालय",
+    "entry_id": "entry.1148621997",
+    "options": [
+      "Kukana",
+      "Nevasa",
+      "Salbatpur",
+      "Shirasgaon",
+      "Sonai",
+      "Vadala",
+      "Belpimpalgaon",
+      "Bhanshiwara",
+      "Chanda",
+      "Ghodegaon",
+      "Karajgaon",
+      "Maka",
+      "Prvarasangaum",
+      "Varkhed"
+    ]
+  },
+  {
+    "title": "महसूल मंडळ",
+    "entry_id": "entry.1222644991",
+    "options": [
+      "NewasaKh",
+      "NesasaBk",
+      "Salabatpur",
+      "Kukana",
+      "Chanda",
+      "Ghodegaon",
+      "Sonai",
+      "Wadala",
+      "Pravara Sangam",
+      "Dedgaon",
+      "Bhanshivara"
+    ]
+  },
+  {
+    "title": "पारनेर - स्थानिक माहिती",
+    "entry_id": null,
+    "options": []
+  },
+  {
+    "title": "पशुवैद्यकीय चिकित्सालय",
+    "entry_id": "entry.1614078200",
+    "options": [
+      "Parner",
+      "Alkuti",
+      "Bhalvani",
+      "Kohokadi",
+      "Nighoj",
+      "Takalidhokeshware",
+      "Vadjhire",
+      "Walvane",
+      "Davalpuri",
+      "Javala",
+      "Kanhurpathar",
+      "Khadakwadi",
+      "Narayanghavan",
+      "Palve",
+      "Phokari",
+      "Rajangaon",
+      "Vankute"
+    ]
+  },
+  {
+    "title": "महसूल मंडळ",
+    "entry_id": "entry.1949236753",
+    "options": [
+      "Parner",
+      "Bhalwani",
+      "Supa",
+      "Wadegavhan",
+      "Wadzire",
+      "Nighoj",
+      "Takli",
+      "Palashi",
+      "Kanhar Pathar",
+      "Palave Kh",
+      "Jawala",
+      "Aalkuti"
+    ]
+  },
+  {
+    "title": "पाथर्डी - स्थानिक माहिती",
+    "entry_id": null,
+    "options": []
+  },
+  {
+    "title": "पशुवैद्यकीय चिकित्सालय",
+    "entry_id": "entry.818591355",
+    "options": [
+      "Karanji",
+      "Kharvandikasar",
+      "Miri",
+      "Pathardi",
+      "Tisgaon",
+      "Bhalgaon",
+      "Chinchpureazade",
+      "Kasarpimpalgaon",
+      "Koradgaon",
+      "Manikdoundi",
+      "Mohojkh",
+      "Sakegaon",
+      "Shiral",
+      "Susare",
+      "Yeli"
+    ]
+  },
+  {
+    "title": "महसूल मंडळ",
+    "entry_id": "entry.1994242300",
+    "options": [
+      "Pathardi",
+      "Manikdhondi",
+      "Takali",
+      "Koradgaon",
+      "Karanji",
+      "Miri",
+      "Tisgaon",
+      "Kharwandi",
+      "Akola"
+    ]
+  },
+  {
+    "title": "राहाता - स्थानिक माहिती",
+    "entry_id": null,
+    "options": []
+  },
+  {
+    "title": "पशुवैद्यकीय चिकित्सालय",
+    "entry_id": "entry.1040454718",
+    "options": [
+      "Rahata",
+      "Bhabaleshwarbk",
+      "Kelwadebk",
+      "Kolaharbk",
+      "Lonibk",
+      "Rui",
+      "Shirdi",
+      "Wakadi",
+      "Adagaon",
+      "Astgaon",
+      "Chitali",
+      "Dhakbk",
+      "Hanmantgaon",
+      "Pimpalwadi",
+      "Puntamba"
+    ]
+  },
+  {
+    "title": "महसूल मंडळ",
+    "entry_id": "entry.1682162549",
+    "options": [
+      "Rahata",
+      "Shirdi",
+      "Loni",
+      "Babhaleshwar",
+      "Puntamba",
+      "Astagaon"
+    ]
+  },
+  {
+    "title": "राहुरी - स्थानिक माहिती",
+    "entry_id": null,
+    "options": []
+  },
+  {
+    "title": "पशुवैद्यकीय चिकित्सालय",
+    "entry_id": "entry.1429415512",
+    "options": [
+      "Rahuri",
+      "Bhrmani",
+      "Kanadgaon",
+      "Kolahark",
+      "Songaon",
+      "Taklimiya",
+      "Tambhere",
+      "Wambori",
+      "Baragaonnandur",
+      "Deolali",
+      "Kadambe",
+      "Mahisgaon",
+      "Manjari",
+      "Manori",
+      "Pathrek",
+      "Umbhare"
+    ]
+  },
+  {
+    "title": "महसूल मंडळ",
+    "entry_id": "entry.1697323197",
+    "options": [
+      "Rahuri",
+      "Satral",
+      "Taharabad",
+      "Dewalali",
+      "Takalimiya",
+      "Bramhani",
+      "Wambori",
+      "Baragaon Nandur"
+    ]
+  },
+  {
+    "title": "शेवगाव - स्थानिक माहिती",
+    "entry_id": null,
+    "options": []
+  },
+  {
+    "title": "पशुवैद्यकीय चिकित्सालय",
+    "entry_id": "entry.1633067046",
+    "options": [
+      "Bhodegaon",
+      "Dahigaon-Ne",
+      "Dhorjalgaon",
+      "Johrapur",
+      "Shevgaon",
+      "Akhegaon",
+      "Amrapur",
+      "Balamtakali",
+      "Chapadgaon",
+      "Ghotan",
+      "Ladjalgaon",
+      "Mungi",
+      "Samangaon",
+      "Shartakali"
+    ]
+  },
+  {
+    "title": "महसूल मंडळ",
+    "entry_id": "entry.495192554",
+    "options": [
+      "Shevgaon",
+      "Bhatkudgaon",
+      "Bodhegaon",
+      "Chapadgaon",
+      "Dhorjalgaon",
+      "Erandgaon",
+      "Dahigaon ne",
+      "Mungi"
+    ]
+  },
+  {
+    "title": "श्रीगोंदा - स्थानिक माहिती",
+    "entry_id": null,
+    "options": []
+  },
+  {
+    "title": "पशुवैद्यकीय चिकित्सालय",
+    "entry_id": "entry.1909494686",
+    "options": [
+      "Belwandi",
+      "Kasti",
+      "Kolagaon",
+      "Pimpalgaonpisa",
+      "Shrigonda",
+      "Adhalgaon",
+      "Bhangaon",
+      "Chikhali",
+      "Devdaithan",
+      "Ghogargaon",
+      "Khandgaon",
+      "Madhewadgaon",
+      "Mandavgan",
+      "Mhase",
+      "Pedgaon",
+      "Ukkadgaon",
+      "Wangdari"
+    ]
+  },
+  {
+    "title": "महसूल मंडळ",
+    "entry_id": "entry.1758758416",
+    "options": [
+      "Shrigonda",
+      "Kashti",
+      "Mandavgan",
+      "Belwandi",
+      "Pendgaon",
+      "Chimbhla",
+      "DevDaethan",
+      "Kolegaon",
+      "Loni Vyankanatha",
+      "Bhangaon",
+      "Adhalgaon"
+    ]
+  },
+  {
+    "title": "श्रीरामपूर - स्थानिक माहिती",
+    "entry_id": null,
+    "options": []
+  },
+  {
+    "title": "पशुवैद्यकीय चिकित्सालय",
+    "entry_id": "entry.569972889",
+    "options": [
+      "Shrirampur",
+      "Kuranpur",
+      "Nimgaonkhari",
+      "Ukalgaon",
+      "Karegaon",
+      "Malunja",
+      "Matapur",
+      "Naur",
+      "Padegaon",
+      "Takalibhan"
+    ]
+  },
+  {
+    "title": "महसूल मंडळ",
+    "entry_id": "entry.829321150",
+    "options": [
+      "Shrirampur",
+      "Belapur",
+      "Undirgaon",
+      "Takalibhan",
+      "Karegaon"
+    ]
+  },
+  {
+    "title": "संगमनेर - स्थानिक माहिती",
+    "entry_id": null,
+    "options": []
+  },
+  {
+    "title": "पशुवैद्यकीय चिकित्सालय",
+    "entry_id": "entry.1345854097",
+    "options": [
+      "Ashvi",
+      "Dhandar",
+      "Ghargaon",
+      "Javale",
+      "Jorve",
+      "Rahimpur",
+      "Sakur",
+      "Sangamner",
+      "Vadgaonpan",
+      "Bota",
+      "Chandanapuri",
+      "Chikani",
+      "Chincholigurav",
+      "Deogaon",
+      "Dolasane",
+      "Lohare",
+      "Nadurkhadarmal",
+      "Nimgaonjali",
+      "Nimon",
+      "Panodi",
+      "Pemgiri",
+      "Talegaon",
+      "Vardipathar",
+      "Varvandi"
+    ]
+  },
+  {
+    "title": "महसूल मंडळ",
+    "entry_id": "entry.1770672269",
+    "options": [
+      "Sangamner",
+      "Dhandarphal",
+      "Aashwi",
+      "Shibalapur",
+      "Talegaon",
+      "Samanapur",
+      "Ghargaon",
+      "Dolasane",
+      "Sakur",
+      "Pimparane",
+      "Nimon",
+      "Ghulewadi",
+      "Sangamner Kh",
+      "Nandur khandarmal"
+    ]
+  },
+  {
+    "title": "२. गाव व पशुपालक माहिती",
+    "entry_id": null,
+    "options": []
+  },
+  {
+    "title": "गावाचे नाव",
+    "entry_id": "entry.667616365",
+    "options": []
+  },
+  {
+    "title": "पशुपालकाचे नाव",
+    "entry_id": "entry.744608837",
+    "options": []
+  },
+  {
+    "title": "मोबाईल नंबर",
+    "entry_id": "entry.1412319850",
+    "options": []
+  },
+  {
+    "title": "३. जनावरांची संख्या",
+    "entry_id": null,
+    "options": []
+  },
+  {
+    "title": "गाय वर्ग - लहान (1 वर्षा खालचे)",
+    "entry_id": "entry.169726096",
+    "options": []
+  },
+  {
+    "title": "गाय वर्ग - मोठे (1 वर्षा वरचे)",
+    "entry_id": "entry.1315182064",
+    "options": []
+  },
+  {
+    "title": "म्हैस वर्ग - लहान (1 वर्षा खालचे)",
+    "entry_id": "entry.1628192218",
+    "options": []
+  },
+  {
+    "title": "म्हैस वर्ग - मोठे (1 वर्षा वरचे)",
+    "entry_id": "entry.1401846099",
+    "options": []
+  },
+  {
+    "title": "पैकी दुभती जनावरे",
+    "entry_id": "entry.1732260657",
+    "options": []
+  },
+  {
+    "title": "भाकड जनावरे",
+    "entry_id": "entry.647819049",
+    "options": []
+  },
+  {
+    "title": "दैनंदिन दूध उत्पादन - लिटर",
+    "entry_id": "entry.1725598946",
+    "options": []
+  },
+  {
+    "title": "शेळ्या",
+    "entry_id": "entry.540129639",
+    "options": []
+  },
+  {
+    "title": "मेंढ्या - स्थलांतरित",
+    "entry_id": "entry.241067737",
+    "options": []
+  },
+  {
+    "title": "मेंढ्या - बंधिस्त",
+    "entry_id": "entry.696685367",
+    "options": []
+  },
+  {
+    "title": "४. जनावरांकरिता पाणी उपलब्धता",
+    "entry_id": null,
+    "options": []
+  },
+  {
+    "title": "जनावरांकरिता पाणी उपलब्धता",
+    "entry_id": "entry.1850744836",
+    "options": [
+      "आहे",
+      "नाही"
+    ]
+  },
+  {
+    "title": "५. उपलब्ध चाऱ्याचा प्रकार",
+    "entry_id": null,
+    "options": []
+  },
+  {
+    "title": "उपलब्ध चाऱ्याचा प्रकार",
+    "entry_id": "entry.355015442",
+    "options": [
+      "हिरवा",
+      "मुरघास",
+      "वाळलेला"
+    ]
+  },
+  {
+    "title": "६. उपलब्ध चारा - मे.टन",
+    "entry_id": null,
+    "options": []
+  },
+  {
+    "title": "हिरवा चारा - मे.टन",
+    "entry_id": "entry.1035898857",
+    "options": []
+  },
+  {
+    "title": "उपलब्ध मुरघास - मे.टन",
+    "entry_id": "entry.901068256",
+    "options": []
+  },
+  {
+    "title": "वाळलेला चारा - मे.टन",
+    "entry_id": "entry.1545782155",
+    "options": []
+  },
+  {
+    "title": "७. अतिरिक्त चारा माहिती",
+    "entry_id": null,
+    "options": []
+  },
+  {
+    "title": "सध्या विक्रीकरिता उपलब्ध चारा - मे.टन",
+    "entry_id": "entry.1534432430",
+    "options": []
+  },
+  {
+    "title": "रबी हंगामात चारा लागवडी योग्य क्षेत्र - हेक्टर",
+    "entry_id": "entry.1686749785",
+    "options": []
+  },
+  {
+    "title": "८. सिंचन सुविधा",
+    "entry_id": null,
+    "options": []
+  },
+  {
+    "title": "सिंचन सुविधा उपलब्ध आहे का?",
+    "entry_id": "entry.1359339260",
+    "options": [
+      "होय",
+      "नाही"
+    ]
+  },
+  {
+    "title": "असल्यास कोणती सिंचन सुविधा उपलब्ध आहे?",
+    "entry_id": "entry.509380968",
+    "options": [
+      "विहीर",
+      "बोअरवेल",
+      "कालवा",
+      "शेततळे",
+      "इतर"
+    ]
+  },
+  {
+    "title": "इतर सिंचन सुविधा असल्यास तिचे नाव लिहा",
+    "entry_id": "entry.636337089",
+    "options": []
+  }
+]

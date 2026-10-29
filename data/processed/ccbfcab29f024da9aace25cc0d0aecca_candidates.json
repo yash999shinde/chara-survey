@@ -1,0 +1,41 @@
+[
+  {
+    "candidate_id": "ccbfcab29f024da9aace25cc0d0aecca",
+    "source_file": "bhiya_2.pdf",
+    "page_count": 1,
+    "mobile_candidates": [
+      "8788250995"
+    ],
+    "raw_text": "--- Page 1 ---\n२9 8788250995\n\nखा |Z. 84 65 एत्वपर\n\n74996L CLOG\n\n0250 21960\n\n797221838\n\nScanned with OKEN Scanner\n",
+    "farmer_fields": {
+      "taluka": "नगर",
+      "veterinary_hospital": "Ralegun",
+      "revenue_circle": "Walki",
+      "village_name": "वडगाव तांदळी",
+      "farmer_name": "आशिष शब्बीर शेख",
+      "mobile": "9096515858",
+      "cow_small": "1",
+      "cow_large": "0",
+      "buffalo_small": "0",
+      "buffalo_large": "0",
+      "milch_animals": "1",
+      "dry_animals": "0",
+      "daily_milk_litres": "20",
+      "goats": "0",
+      "sheep_migratory": "0",
+      "sheep_confined": "0",
+      "water_availability": "आहे",
+      "green_fodder_available": "हिरवा",
+      "silage_available": "नाही",
+      "dry_fodder_available": "उपलब्ध",
+      "green_fodder_tonnes": "1.0",
+      "silage_tonnes": "1.0",
+      "dry_fodder_tonnes": "1.0",
+      "fodder_for_sale_tonnes": "0.0",
+      "rabi_area_hectares": "2.0",
+      "irrigation_available": "होय",
+      "irrigation_types": "विहीर",
+      "irrigation_other": ""
+    }
+  }
+]

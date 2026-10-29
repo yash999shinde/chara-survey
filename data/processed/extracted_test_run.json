@@ -1,0 +1,38 @@
+[
+  {
+    "row": 1,
+    "name": "डत 1२ ६ न( < नभ",
+    "notes": "",
+    "uncertain": "buffalo_large, goats"
+  },
+  {
+    "row": 2,
+    "name": "अस्पष्ट नाव (पडताळणी आवश्यक)",
+    "notes": "शेतकऱ्याचे नाव हस्तलिखित/अस्पष्ट (हस्तलिखित नाव पडताळणी आवश्यक)",
+    "uncertain": "farmer_name, buffalo_large, daily_milk_litres, goats"
+  },
+  {
+    "row": 3,
+    "name": "ल॑न ७ जनास राख",
+    "notes": "",
+    "uncertain": "cow_large"
+  },
+  {
+    "row": 4,
+    "name": "श्गाह्य रगवा शाक",
+    "notes": "",
+    "uncertain": "buffalo_large, goats"
+  },
+  {
+    "row": 5,
+    "name": "वाव रुबाब श ख",
+    "notes": "",
+    "uncertain": "buffalo_large, daily_milk_litres"
+  },
+  {
+    "row": 6,
+    "name": "शार माल राख",
+    "notes": "",
+    "uncertain": "cow_large, buffalo_large, green_fodder_tonnes"
+  }
+]

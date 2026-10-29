@@ -1,0 +1,92 @@
+EXTRACTED 6 RECORDS FROM 4c6d29186a5840f3b14bc5f17240642c.pdf:
+
+--- ROW 1 ---
+  Farmer Name      : डत 1२ ६ न( < नभ
+  Mobile           : 9012654186
+  Cow (L/S)        : 0 / 0
+  Buffalo (L/S)    : 0 / 0
+  Milch / Dry      : 0 / 0
+  Milk (L/day)     : 22.0
+  Goats            : 0
+  Fodder (Gr/Sil/Dr): 3.0 / 0.0 / 0.0
+  Irrigation       : विहीर
+  Status           : needs_review
+  Uncertain Fields : buffalo_large, goats
+  Review Notes     : 
+  Raw OCR Text     : | /» 21112) RRS (30290:1>2654 -॥ 1) |- ८६८८ | उ 2 -- | -71|-उ lagu  ॥ | |। |: | ॥ | । 6
+
+--- ROW 2 ---
+  Farmer Name      : अस्पष्ट नाव (पडताळणी आवश्यक)
+  Mobile           : 9768642590
+  Cow (L/S)        : 15 / 0
+  Buffalo (L/S)    : 0 / 0
+  Milch / Dry      : 0 / 0
+  Milk (L/day)     : 0.0
+  Goats            : 0
+  Fodder (Gr/Sil/Dr): 2.0 / 0.0 / 0.0
+  Irrigation       : 
+  Status           : needs_review
+  Uncertain Fields : farmer_name, buffalo_large, daily_milk_litres, goats
+  Review Notes     : शेतकऱ्याचे नाव हस्तलिखित/अस्पष्ट (हस्तलिखित नाव पडताळणी आवश्यक)
+  Raw OCR Text     : [2 RAK रानात AES ४768250११5 |०2_9» 9 |-|-|-।|5 !5४०|।2- - ।- |2 ब्वा! ८-2 - !५2-!। -।| [।|- “0
+
+--- ROW 3 ---
+  Farmer Name      : ल॑न ७ जनास राख
+  Mobile           : 7525454649
+  Cow (L/S)        : 0 / 0
+  Buffalo (L/S)    : 3 / 0
+  Milch / Dry      : 2 / 2
+  Milk (L/day)     : 5.0
+  Goats            : 2
+  Fodder (Gr/Sil/Dr): 0.0 / 0.0 / 0.0
+  Irrigation       : 
+  Status           : needs_review
+  Uncertain Fields : cow_large
+  Review Notes     : 
+  Raw OCR Text     : 13) |लब]७ टाल XN |५2५4५464९८८०५ - इ! :ड।-|2. 22. ॥5।|2-| —| -ll मिह! ८“! ॥|7। [| -। uj} -_ ey
+
+--- ROW 4 ---
+  Farmer Name      : श्गाह्य रगवा शाक
+  Mobile           : 7499962620
+  Cow (L/S)        : 0 / 0
+  Buffalo (L/S)    : 0 / 0
+  Milch / Dry      : 0 / 0
+  Milk (L/day)     : 0.0
+  Goats            : 0
+  Fodder (Gr/Sil/Dr): 2.0 / 0.0 / 0.0
+  Irrigation       : 
+  Status           : needs_review
+  Uncertain Fields : buffalo_large, goats
+  Review Notes     : 
+  Raw OCR Text     : [4) च्या क 2H 17499962 62-०9 | -4 4 |-॥|-।|-| -| -|॥[०| -- | -- | 2 चम ८ | a1 rl (| __
+
+--- ROW 5 ---
+  Farmer Name      : वाव रुबाब श ख
+  Mobile           : 7025021960
+  Cow (L/S)        : 0 / 0
+  Buffalo (L/S)    : 0 / 0
+  Milch / Dry      : 0 / 0
+  Milk (L/day)     : 0.0
+  Goats            : 0
+  Fodder (Gr/Sil/Dr): 0.0 / 0.0 / 1.0
+  Irrigation       : 
+  Status           : needs_review
+  Uncertain Fields : buffalo_large, daily_milk_litres
+  Review Notes     : 
+  Raw OCR Text     : 15) भाव रु&ाब >] |॥7०2202-1960 |—-| || |॥ -॥-|-| 1 | 5 || 7 । 0 ।|-7 jae) | ( | -। (| a ore
+
+--- ROW 6 ---
+  Farmer Name      : शार माल राख
+  Mobile           : 8172216450
+  Cow (L/S)        : 0 / 0
+  Buffalo (L/S)    : 0 / 0
+  Milch / Dry      : 1 / 0
+  Milk (L/day)     : 25.0
+  Goats            : 201
+  Fodder (Gr/Sil/Dr): 0.0 / 0.0 / 0.0
+  Irrigation       : 
+  Status           : needs_review
+  Uncertain Fields : cow_large, buffalo_large, green_fodder_tonnes
+  Review Notes     : 
+  Raw OCR Text     : [C) ब्शार माल 2५८ ।/१72-2-164&5&0- 6८-11 | ls jasol —| —| 2- क्ष | "| 4 me) -1 | 2-| 7
+

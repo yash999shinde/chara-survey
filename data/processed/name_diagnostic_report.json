@@ -1,0 +1,50 @@
+[
+  {
+    "page": 1,
+    "row": 1,
+    "expected_ground_truth": "आशिष शब्बीर शेख",
+    "raw_ocr_output": "| डर 1७ ब्ध १<_ न. न्स",
+    "processed_name": "डर 1७ ब्ध १<_ न. न्स",
+    "exact_match": false
+  },
+  {
+    "page": 1,
+    "row": 2,
+    "expected_ground_truth": "समीर जमाल शेख",
+    "raw_ocr_output": "समान जाबाल शग",
+    "processed_name": "समान जाबाल शग",
+    "exact_match": false
+  },
+  {
+    "page": 1,
+    "row": 3,
+    "expected_ground_truth": "लतीफ जमाल शेख",
+    "raw_ocr_output": "लल लॅ]५ ७ बच्चा",
+    "processed_name": "लल लॅ]५ ७ बच्चा",
+    "exact_match": false
+  },
+  {
+    "page": 1,
+    "row": 4,
+    "expected_ground_truth": "इब्राहिम रुबाब शेख",
+    "raw_ocr_output": "२७ रड €ाक",
+    "processed_name": "२७ रड €ाक",
+    "exact_match": false
+  },
+  {
+    "page": 1,
+    "row": 5,
+    "expected_ground_truth": "नबाब रुबाब शेख",
+    "raw_ocr_output": "ग़ 4 ७ रव ह: «|",
+    "processed_name": "ग़ 4 ७ रव ह: «",
+    "exact_match": false
+  },
+  {
+    "page": 1,
+    "row": 6,
+    "expected_ground_truth": "बशीर कमाल शेख",
+    "raw_ocr_output": "म्या] कलाल जावा |",
+    "processed_name": "म्या] कलाल जावा",
+    "exact_match": false
+  }
+]

@@ -1,0 +1,371 @@
+{% extends "base.html" %}
+
+{% block title %}शेतकरी माहिती डॅशबोर्ड — चारा सर्वेक्षण{% endblock %}
+
+{% block content %}
+<div class="row g-3 mb-4">
+    <!-- KPI 1: Total Records -->
+    <div class="col-md-3 col-sm-6">
+        <div class="card card-kpi bg-white p-3 border-start border-primary border-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted small fw-semibold">एकूण शेतकरी नोंदी</span>
+                    <h3 class="mb-0 fw-bold text-primary">{{ counts.total }}</h3>
+                </div>
+                <div class="bg-primary bg-opacity-10 text-primary p-3 rounded-circle">
+                    <i class="bi bi-people-fill fs-4"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- KPI 2: Verified Records -->
+    <div class="col-md-3 col-sm-6">
+        <div class="card card-kpi bg-white p-3 border-start border-success border-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted small fw-semibold">पडताळणी पूर्ण (Verified)</span>
+                    <h3 class="mb-0 fw-bold text-success">{{ counts.verified }}</h3>
+                </div>
+                <div class="bg-success bg-opacity-10 text-success p-3 rounded-circle">
+                    <i class="bi bi-patch-check-fill fs-4"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- KPI 3: Pending Review -->
+    <div class="col-md-3 col-sm-6">
+        <div class="card card-kpi bg-white p-3 border-start border-warning border-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted small fw-semibold">पडताळणी प्रलंबित (Pending)</span>
+                    <h3 class="mb-0 fw-bold text-warning">{{ counts.pending }}</h3>
+                </div>
+                <div class="bg-warning bg-opacity-10 text-warning p-3 rounded-circle">
+                    <i class="bi bi-hourglass-split fs-4"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- KPI 4: Duplicates Flagged -->
+    <div class="col-md-3 col-sm-6">
+        <div class="card card-kpi bg-white p-3 border-start border-danger border-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted small fw-semibold">संभाव्य डुप्लिकेट (Duplicates)</span>
+                    <h3 class="mb-0 fw-bold text-danger">{{ counts.duplicates }}</h3>
+                </div>
+                <div class="bg-danger bg-opacity-10 text-danger p-3 rounded-circle">
+                    <i class="bi bi-exclamation-octagon-fill fs-4"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Table Card -->
+<div class="card shadow-sm border-0 rounded-3">
+    <div class="card-header bg-white py-3 border-bottom">
+        <div class="row g-2 align-items-center">
+            <!-- Filter Tabs -->
+            <div class="col-lg-5 col-md-12">
+                <div class="btn-group btn-group-sm" role="group">
+                    <a href="/farmers?status=all{% if current_source_file != 'all' %}&source_file={{ current_source_file }}{% endif %}{% if current_batch != 'all' %}&batch={{ current_batch }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}" class="btn btn-outline-secondary {% if current_status == 'all' or not current_status %}active fw-bold{% endif %}">
+                        सर्व ({{ counts.total }})
+                    </a>
+                    <a href="/farmers?status=pending_review{% if current_source_file != 'all' %}&source_file={{ current_source_file }}{% endif %}{% if current_batch != 'all' %}&batch={{ current_batch }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}" class="btn btn-outline-warning {% if current_status == 'pending_review' %}active fw-bold{% endif %}">
+                        पडताळणी बाकी ({{ counts.pending }})
+                    </a>
+                    <a href="/farmers?status=verified{% if current_source_file != 'all' %}&source_file={{ current_source_file }}{% endif %}{% if current_batch != 'all' %}&batch={{ current_batch }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}" class="btn btn-outline-success {% if current_status == 'verified' %}active fw-bold{% endif %}">
+                        पडताळणी पूर्ण ({{ counts.verified }})
+                    </a>
+                    <a href="/farmers?status=duplicate{% if current_source_file != 'all' %}&source_file={{ current_source_file }}{% endif %}{% if current_batch != 'all' %}&batch={{ current_batch }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}" class="btn btn-outline-danger {% if current_status == 'duplicate' %}active fw-bold{% endif %}">
+                        डुप्लिकेट ({{ counts.duplicates }})
+                    </a>
+                </div>
+            </div>
+
+            <!-- Search and Action Buttons -->
+            <div class="col-lg-7 col-md-12 text-lg-end">
+                <form method="GET" action="/farmers" class="d-inline-flex me-2">
+                    <input type="hidden" name="status" value="{{ current_status or 'all' }}">
+                    {% if current_source_file != 'all' %}<input type="hidden" name="source_file" value="{{ current_source_file }}">{% endif %}
+                    {% if current_batch != 'all' %}<input type="hidden" name="batch" value="{{ current_batch }}">{% endif %}
+                    <div class="input-group input-group-sm" style="max-width: 200px;">
+                        <input type="text" name="q" class="form-control" placeholder="नाव, गाव, मोबाईल..." value="{{ search_query or '' }}">
+                        <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
+                    </div>
+                </form>
+                <a href="/upload" class="btn btn-sm btn-primary fw-semibold me-1">
+                    <i class="bi bi-cloud-arrow-up-fill me-1"></i> अपलोड करा
+                </a>
+                <a href="/farmers/export_excel?status={{ current_status or 'all' }}{% if current_source_file != 'all' %}&source_file={{ current_source_file }}{% endif %}{% if current_batch != 'all' %}&batch={{ current_batch }}{% endif %}" class="btn btn-sm btn-success fw-semibold me-1">
+                    <i class="bi bi-file-earmark-excel-fill me-1"></i> Excel Export
+                </a>
+                <a href="/google_forms{% if current_batch != 'all' %}?batch={{ current_batch }}&scope=batch{% endif %}" class="btn btn-sm btn-warning fw-bold text-dark shadow-sm">
+                    <i class="bi bi-google me-1"></i> Google Form ऑटो-फिल
+                </a>
+            </div>
+        </div>
+
+        <!-- Problem 1: Source File and Upload Batch Filters Row -->
+        <div class="row g-2 align-items-center mt-2 pt-2 border-top">
+            <div class="col-12 d-flex flex-wrap align-items-center gap-2">
+                <span class="small fw-bold text-muted"><i class="bi bi-funnel"></i> डेटा फिल्टर:</span>
+
+                <!-- Quick Button: View Latest PDF Batch -->
+                <a href="/farmers?latest=1" class="btn btn-sm {% if current_batch == latest_batch_id %}btn-primary text-white fw-bold{% else %}btn-outline-primary{% endif %}" title="फक्त सर्वात शेवटी अपलोड केलेल्या फाईलचा डेटा पहा">
+                    <i class="bi bi-lightning-charge-fill me-1"></i> फक्त नवीनतम अपलोड पहा (Latest PDF Batch)
+                </a>
+
+                <!-- Source File Dropdown -->
+                <div class="d-inline-flex align-items-center">
+                    <span class="small text-muted me-1">फाईल:</span>
+                    <select class="form-select form-select-sm" style="max-width: 220px;" onchange="location.href='/farmers?source_file=' + encodeURIComponent(this.value) + '{% if current_status and current_status != 'all' %}&status={{ current_status }}{% endif %}'">
+                        <option value="all" {% if current_source_file == 'all' %}selected{% endif %}>सर्व फाईल्स (All Files)</option>
+                        {% for sf in source_files %}
+                        <option value="{{ sf.source_file }}" {% if current_source_file == sf.source_file %}selected{% endif %}>
+                            {{ sf.source_file[:24] }}{% if sf.source_file|length > 24 %}...{% endif %} ({{ sf.record_count }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Upload Batch Dropdown -->
+                <div class="d-inline-flex align-items-center">
+                    <span class="small text-muted me-1">बॅच:</span>
+                    <select class="form-select form-select-sm" style="max-width: 220px;" onchange="location.href='/farmers?batch=' + encodeURIComponent(this.value) + '{% if current_status and current_status != 'all' %}&status={{ current_status }}{% endif %}'">
+                        <option value="all" {% if current_batch == 'all' %}selected{% endif %}>सर्व बॅचेस (All Batches)</option>
+                        {% for b in upload_batches %}
+                        <option value="{{ b.batch_id }}" {% if current_batch == b.batch_id %}selected{% endif %}>
+                            {{ b.batch_id[:22] }}{% if b.batch_id|length > 22 %}...{% endif %} ({{ b.record_count }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                {% if current_source_file != 'all' or current_batch != 'all' or (current_status and current_status != 'all') or search_query %}
+                <a href="/farmers" class="btn btn-sm btn-outline-secondary ms-auto" title="सर्व फिल्टर काढा आणि सर्व डेटा पहा">
+                    <i class="bi bi-arrow-counterclockwise me-1"></i> फिल्टर रीसेट करा (Reset)
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if current_source_file != 'all' or current_batch != 'all' %}
+    <div class="alert alert-primary bg-primary bg-opacity-10 text-primary py-2 px-3 mb-0 border-0 rounded-0 d-flex justify-content-between align-items-center">
+        <div>
+            <i class="bi bi-info-circle-fill me-1"></i>
+            <strong>सक्रिय फिल्टर:</strong>
+            {% if current_batch != 'all' %}बॅच <span class="badge bg-primary text-white">{{ current_batch }}</span>{% endif %}
+            {% if current_source_file != 'all' %}फाईल <span class="badge bg-dark text-white">{{ current_source_file }}</span>{% endif %}
+            — एकूण <strong>{{ farmers|length }}</strong> शेतकरी नोंदी दाखवत आहे.
+        </div>
+        <div class="d-flex gap-2 align-items-center">
+            {% if current_batch != 'all' %}
+            <a href="/farmers/reextract?batch={{ current_batch }}" class="btn btn-sm btn-warning text-dark fw-bold py-0 shadow-sm" title="या बॅचचा डेटा नवीन AI व्हिजनने पुन्हा अचूक वाचा" onclick="return confirm('या बॅचच्या नोंदी AI व्हिजनद्वारे पुन्हा नव्याने वाचून अपडेट करायच्या आहेत का?')">
+                <i class="bi bi-robot me-1"></i> पुन्हा AI ने वाचा (Re-extract with AI)
+            </a>
+            {% endif %}
+            <a href="/farmers" class="btn btn-sm btn-outline-primary bg-white py-0">सर्व नोंदी पहा (View All)</a>
+        </div>
+    </div>
+    {% endif %}
+
+    <form method="POST" action="/farmers/bulk_verify" id="bulkForm">
+        <div class="card-body p-0">
+            <!-- Bulk Action Bar (Hidden by default, shown when items selected) -->
+            <div id="bulkActionBar" class="bg-light px-3 py-2 border-bottom d-none align-items-center justify-content-between">
+                <div>
+                    <span id="selectedCount" class="fw-semibold text-primary">0</span> नोंदी निवडल्या आहेत.
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-sm btn-success fw-semibold">
+                        <i class="bi bi-check2-all me-1"></i> निवडलेल्या सर्व नोंदींची पडताळणी करा (Verify Selected)
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" style="font-size: 0.92rem;">
+                    <thead class="table-light text-secondary border-bottom">
+                        <tr>
+                            <th style="width: 40px;" class="text-center">
+                                <input type="checkbox" class="form-check-input" id="selectAll">
+                            </th>
+                            <th style="width: 60px;">ID</th>
+                            <th>गाव व तालुका</th>
+                            <th>शेतकऱ्याचे नाव</th>
+                            <th>मोबाईल क्रमांक</th>
+                            <th>पशुधन (गायी/म्हशी)</th>
+                            <th>दूध (L/दिवस)</th>
+                            <th>चारा (हिरवा/सुका टन)</th>
+                            <th>स्थिती</th>
+                            <th class="text-center" style="width: 170px;">कृती (Actions)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for f in farmers %}
+                        <tr class="{% if f.is_duplicate %}table-danger bg-opacity-25{% elif f.status == 'verified' %}table-success bg-opacity-10{% endif %}">
+                            <td class="text-center">
+                                <input type="checkbox" name="farmer_ids" value="{{ f.id }}" class="form-check-input farmer-checkbox">
+                            </td>
+                            <td class="fw-bold text-muted">#{{ f.id }}</td>
+                            <td>
+                                <div><strong class="text-dark">{{ f.village_name or '—' }}</strong></div>
+                                <span class="badge bg-light text-secondary border">{{ f.taluka or 'तालुका अनुपलब्ध' }}</span>
+                            </td>
+                            <td>
+                                <div class="fw-bold text-dark">{{ f.farmer_name }}</div>
+                                <div class="d-flex flex-wrap gap-1 mt-1">
+                                    {% if f.source_file %}
+                                        <span class="badge bg-light text-secondary border" title="मूळ फाईल: {{ f.source_file }}">
+                                            <i class="bi bi-file-earmark-text"></i> {{ f.source_file[:18] }}{% if f.source_file|length > 18 %}...{% endif %}
+                                        </span>
+                                    {% endif %}
+                                    {% if f.upload_batch_id %}
+                                        <span class="badge bg-light text-primary border" title="अपलोड बॅच: {{ f.upload_batch_id }}">
+                                            <i class="bi bi-layers"></i> {{ f.upload_batch_id[:16] }}
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                {% if f.uncertain_fields %}
+                                    <div class="mt-1">
+                                        <span class="badge bg-warning bg-opacity-25 text-dark border border-warning" title="पडताळणी आवश्यक: {{ f.uncertain_fields }}">
+                                            <i class="bi bi-exclamation-triangle-fill text-warning me-1"></i>तपासणी: {{ f.uncertain_fields }}
+                                        </span>
+                                    </div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if f.mobile %}
+                                    {% if f.mobile|length == 10 and f.mobile[0] in '6789' %}
+                                        <span class="font-monospace fw-semibold">{{ f.mobile }}</span>
+                                    {% else %}
+                                        <span class="text-danger font-monospace fw-semibold" title="अपूर्ण किंवा चुकीचा मोबाईल क्रमांक">
+                                            <i class="bi bi-exclamation-triangle"></i> {{ f.mobile }} (अपूर्ण)
+                                        </span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="text-danger small fst-italic">उपलब्ध नाही</span>
+                                {% endif %}
+                                {% if f.is_duplicate %}
+                                    <div class="small text-danger fw-semibold mt-1" title="{{ f.duplicate_reason }}">
+                                        <i class="bi bi-copy"></i> संभाव्य डुप्लिकेट
+                                    </div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div><small class="text-muted">गायी:</small> {{ f.cow_large or 0 }} <small class="text-muted">(लहान: {{ f.cow_small or 0 }})</small></div>
+                                <div><small class="text-muted">म्हशी:</small> {{ f.buffalo_large or 0 }} <small class="text-muted">(लहान: {{ f.buffalo_small or 0 }})</small></div>
+                                {% if f.goats %}<div class="text-primary small fw-semibold"><i class="bi bi-dot"></i>शेळ्या: {{ f.goats }}</div>{% endif %}
+                                {% if f.milch_animals or f.dry_animals %}<div class="text-muted small">दुभती: {{ f.milch_animals or 0 }} | भाकड: {{ f.dry_animals or 0 }}</div>{% endif %}
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark border font-monospace fs-6">{{ f.daily_milk_litres or 0.0 }}</span>
+                            </td>
+                            <td>
+                                <div><small class="text-muted">हिरवा:</small> {{ f.green_fodder_tonnes or 0.0 }} टन</div>
+                                <div><small class="text-muted">सुका:</small> {{ f.dry_fodder_tonnes or 0.0 }} टन</div>
+                                {% if f.silage_tonnes %}<div class="small text-success"><small class="text-muted">मुरघास:</small> {{ f.silage_tonnes }} टन</div>{% endif %}
+                            </td>
+                            <td>
+                                {% if f.status == 'verified' %}
+                                    <span class="badge badge-verified px-2 py-1"><i class="bi bi-check-lg me-1"></i>Verified</span>
+                                {% elif f.status == 'submitted' %}
+                                    <span class="badge badge-submitted px-2 py-1"><i class="bi bi-send-check me-1"></i>Submitted</span>
+                                {% elif f.status == 'needs_review' or f.is_duplicate %}
+                                    <span class="badge badge-needs-review px-2 py-1"><i class="bi bi-flag-fill me-1"></i>Needs Review</span>
+                                {% else %}
+                                    <span class="badge badge-pending px-2 py-1"><i class="bi bi-clock-history me-1"></i>Pending</span>
+                                {% endif %}
+                                {% if f.review_notes %}
+                                    <div class="small text-muted fst-italic text-truncate" style="max-width: 140px;" title="{{ f.review_notes }}">
+                                        {{ f.review_notes }}
+                                    </div>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="/farmers/{{ f.id }}/edit" class="btn btn-outline-primary" title="नोंद बदला (Edit Record)">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    {% if f.status != 'verified' %}
+                                        <button type="button" class="btn btn-outline-success" title="पडताळणी पूर्ण करा (Verify)" onclick="verifySingle('{{ f.id }}')">
+                                            <i class="bi bi-check-lg"></i>
+                                        </button>
+                                    {% endif %}
+                                    <button type="button" class="btn btn-outline-danger" title="नोंद हटवा (Delete)" onclick="confirmDelete('{{ f.id }}', '{{ f.farmer_name }}')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="10" class="text-center py-5 text-muted">
+                                <i class="bi bi-folder-x fs-1 d-block mb-2 text-secondary"></i>
+                                <h5>कोणतीही नोंद सापडली नाही.</h5>
+                                <p class="small">नवीन PDF, प्रतिमा किंवा Excel फाईल अपलोड करण्यासाठी वर दिलेल्या 'अपलोड' बटणावर क्लिक करा.</p>
+                                <a href="/upload" class="btn btn-primary btn-sm">नवीन फाईल अपलोड करा</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Hidden standalone forms for single-record actions -->
+<form id="singleVerifyForm" method="POST" style="display: none;"></form>
+<form id="singleDeleteForm" method="POST" style="display: none;"></form>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Handle select all checkbox
+    const selectAll = document.getElementById('selectAll');
+    const checkboxes = document.querySelectorAll('.farmer-checkbox');
+    const bulkBar = document.getElementById('bulkActionBar');
+    const selectedCount = document.getElementById('selectedCount');
+
+    function updateBulkBar() {
+        const checked = document.querySelectorAll('.farmer-checkbox:checked').length;
+        selectedCount.textContent = checked;
+        if (checked > 0) {
+            bulkBar.classList.remove('d-none');
+            bulkBar.classList.add('d-flex');
+        } else {
+            bulkBar.classList.remove('d-flex');
+            bulkBar.classList.add('d-none');
+        }
+    }
+
+    if (selectAll) {
+        selectAll.addEventListener('change', function() {
+            checkboxes.forEach(cb => cb.checked = selectAll.checked);
+            updateBulkBar();
+        });
+    }
+
+    checkboxes.forEach(cb => {
+        cb.addEventListener('change', updateBulkBar);
+    });
+
+    function verifySingle(farmerId) {
+        const form = document.getElementById('singleVerifyForm');
+        form.action = '/farmers/' + farmerId + '/verify';
+        form.submit();
+    }
+
+    function confirmDelete(farmerId, farmerName) {
+        if (confirm("तुम्हाला खात्री आहे का की शेतकरी नोंद #" + farmerId + " (" + farmerName + ") हटवायची आहे? ही कृती पूर्ववत करता येणार नाही.")) {
+            const form = document.getElementById('singleDeleteForm');
+            form.action = '/farmers/' + farmerId + '/delete';
+            form.submit();
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,134 @@
+[
+  {
+    "row_index": 1,
+    "raw_cells": {
+      "col_0": "",
+      "col_1": "—{",
+      "col_2": "Tf",
+      "col_3": "",
+      "col_4": "",
+      "col_5": "",
+      "col_6": "",
+      "col_7": "",
+      "col_8": "",
+      "col_9": "",
+      "col_10": "",
+      "col_11": ""
+    },
+    "taluka": "नगर",
+    "veterinary_hospital": "Ralegun",
+    "revenue_circle": "Walki",
+    "needs_review": false,
+    "review_reasons": []
+  },
+  {
+    "row_index": 2,
+    "raw_cells": {
+      "col_0": "",
+      "col_1": "~ |",
+      "col_2": "|",
+      "col_3": "",
+      "col_4": "",
+      "col_5": "",
+      "col_6": "",
+      "col_7": "",
+      "col_8": "",
+      "col_9": "",
+      "col_10": "",
+      "col_11": ""
+    },
+    "taluka": "नगर",
+    "veterinary_hospital": "Ralegun",
+    "revenue_circle": "Walki",
+    "needs_review": false,
+    "review_reasons": []
+  },
+  {
+    "row_index": 3,
+    "raw_cells": {
+      "col_0": "",
+      "col_1": "|",
+      "col_2": "|",
+      "col_3": "",
+      "col_4": "",
+      "col_5": "",
+      "col_6": "",
+      "col_7": "",
+      "col_8": "",
+      "col_9": "",
+      "col_10": "",
+      "col_11": ""
+    },
+    "taluka": "नगर",
+    "veterinary_hospital": "Ralegun",
+    "revenue_circle": "Walki",
+    "needs_review": false,
+    "review_reasons": []
+  },
+  {
+    "row_index": 4,
+    "raw_cells": {
+      "col_0": "1",
+      "col_1": "न्न]",
+      "col_2": "|",
+      "col_3": "",
+      "col_4": "",
+      "col_5": "",
+      "col_6": "",
+      "col_7": "",
+      "col_8": "",
+      "col_9": "",
+      "col_10": "",
+      "col_11": ""
+    },
+    "taluka": "नगर",
+    "veterinary_hospital": "Ralegun",
+    "revenue_circle": "Walki",
+    "needs_review": false,
+    "review_reasons": []
+  },
+  {
+    "row_index": 5,
+    "raw_cells": {
+      "col_0": "",
+      "col_1": "|",
+      "col_2": "|]",
+      "col_3": "",
+      "col_4": "",
+      "col_5": "",
+      "col_6": "",
+      "col_7": "",
+      "col_8": "",
+      "col_9": "",
+      "col_10": "",
+      "col_11": ""
+    },
+    "taluka": "नगर",
+    "veterinary_hospital": "Ralegun",
+    "revenue_circle": "Walki",
+    "needs_review": false,
+    "review_reasons": []
+  },
+  {
+    "row_index": 6,
+    "raw_cells": {
+      "col_0": "7",
+      "col_1": "_",
+      "col_2": "|",
+      "col_3": "4",
+      "col_4": "",
+      "col_5": "",
+      "col_6": "",
+      "col_7": "",
+      "col_8": "",
+      "col_9": "",
+      "col_10": "",
+      "col_11": ""
+    },
+    "taluka": "नगर",
+    "veterinary_hospital": "Ralegun",
+    "revenue_circle": "Walki",
+    "needs_review": false,
+    "review_reasons": []
+  }
+]

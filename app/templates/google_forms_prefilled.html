@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Google Form प्री-फिल्ड लिंक्स — चारा सर्वेक्षण{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center bg-white p-3 rounded-3 shadow-sm border">
+            <div>
+                <h4 class="fw-bold text-primary mb-1">
+                    <i class="bi bi-box-arrow-up-right me-2"></i>Google Form प्री-फिल्ड लिंक्स (Prefilled Links)
+                </h4>
+                <p class="text-muted small mb-0">
+                    खाली दिलेल्या प्रत्येक लिंकवर क्लिक केल्यास Google Form सर्व माहितीसह भरलेला ओपन होईल. तुम्ही थेट सबमिट करू शकता.
+                </p>
+            </div>
+            <div>
+                <a href="/google_forms" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-arrow-left me-1"></i> Google Form ऑटोमेशन पॅनेल
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="card shadow-sm border-0 rounded-3">
+            <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                <span class="fw-bold">
+                    तयार झालेल्या लिंक्स: <span class="badge bg-primary">{{ items|length }} शेतकरी</span>
+                </span>
+                <small class="text-muted">
+                    फॉर्म: <strong>{{ form_meta.title or 'Google Form' }}</strong>
+                </small>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0" style="font-size: 0.92rem;">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>शेतकऱ्याचे नाव</th>
+                                <th>गाव</th>
+                                <th>मोबाईल</th>
+                                <th>दूध उत्पादन</th>
+                                <th>चारा (मे.टन)</th>
+                                <th class="text-end">कृती (Action)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in items %}
+                            {% set f = item.farmer %}
+                            <tr>
+                                <td><code>#{{ f.id }}</code></td>
+                                <td class="fw-bold text-dark">{{ f.farmer_name }}</td>
+                                <td>{{ f.village_name }}</td>
+                                <td>{{ f.mobile }}</td>
+                                <td>{{ f.daily_milk_litres }} लिटर</td>
+                                <td>{{ f.green_fodder_tonnes }} हिरवा / {{ f.dry_fodder_tonnes }} वाळलेला</td>
+                                <td class="text-end">
+                                    <a href="{{ item.url }}" target="_blank" class="btn btn-sm btn-primary fw-semibold">
+                                        <i class="bi bi-box-arrow-up-right me-1"></i> प्री-फिल्ड फॉर्म उघडा
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

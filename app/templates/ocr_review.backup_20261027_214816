@@ -1,0 +1,116 @@
+﻿        review_file.write_text(
+            json.dumps(reviews, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+        return redirect(url_for("ocr_review_dashboard"))
+
+    return render_template(
+        "ocr_review.html",
+        records=records,
+        reviews=reviews,
+        source_name=candidate_file.name,
+        field_names=FIELDS,
+    )
+'''
+
+updated_app = updated_app[:route_start] + route + updated_app[route_end:]
+
+updated_template = r'''<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OCR Human Review — Chara Survey</title>
+<style>
+body{font-family:Arial,sans-serif;max-width:1100px;margin:25px auto;padding:0 16px;background:#f4f6fa;color:#182033}
+.card{background:white;padding:20px;border:1px solid #ddd;border-radius:10px;margin:16px 0}
+label{display:block;font-weight:600;margin:9px 0 5px}
+textarea,input,select{box-sizing:border-box;width:100%;padding:10px;border:1px solid #ccd2dd;border-radius:5px}
+textarea{min-height:150px}
+button{background:#185abd;color:white;border:0;padding:11px 15px;border-radius:6px;cursor:pointer;margin:10px 8px 0 0}
+.notice{padding:12px;background:#fff4d6;border-radius:6px;overflow-wrap:anywhere}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.help{color:#505b70;font-size:14px}
+</style>
+</head>
+<body>
+<h1>OCR Human Review</h1>
+<p>Candidate file: {{ source_name }}</p>
+<p><a href="/">Main dashboard</a> | <a href="/upload">Upload another document</a> | <a href="/farmers">Farmers dashboard</a></p>
+<p class="notice">OCR ko original survey ke against verify karein. Farmer data ko staging mein bhejne se pehle reviewer verification zaroori hai. Is page se data automatically approve nahi hota.</p>
+
+{% for record in records %}
+{% set rid = record.get('candidate_id', '') %}
+{% set saved = reviews.get(rid, {}) %}
+{% set fields = saved.get('farmer_fields', {}) %}
+<div class="card">
+<h2>{{ record.get('source_file', rid) }}</h2>
+<p><b>Detected mobile candidates:</b> {{ record.get('mobile_candidates', [])|join(', ') or 'None detected' }}</p>
+{% if saved.get('stage_message') %}
+<p class="notice">{{ saved.get('stage_message') }}</p>
+{% endif %}
+
+<form method="post" action="/ocr-review">
+<input type="hidden" name="candidate_id" value="{{ rid }}">
+
+<h3>1. OCR text review</h3>
+<label for="ocrtext-{{ rid }}">OCR / corrected text</label>
+<textarea id="ocrtext-{{ rid }}" name="corrected_text" required>{{ saved.get('corrected_text', record.get('raw_text', '')) }}</textarea>
+
+<label for="status-{{ rid }}">Review status</label>
+<select id="status-{{ rid }}" name="status">
+<option value="pending" {% if saved.get('status','pending') == 'pending' %}selected{% endif %}>Pending</option>
+<option value="verified" {% if saved.get('status') == 'verified' %}selected{% endif %}>Verified by reviewer</option>
+<option value="needs_correction" {% if saved.get('status') == 'needs_correction' %}selected{% endif %}>Needs correction</option>
+</select>
+
+<label for="note-{{ rid }}">Reviewer note</label>
+<input id="note-{{ rid }}" name="note" value="{{ saved.get('note', '') }}" placeholder="Optional reviewer note">
+
+<h3>2. Farmer fields</h3>
+<p class="help">Fields ko original document se bharein ya correct karein. Naam aur gaon mandatory hain. Baaki fields abhi blank chhod sakte hain agar source se verify nahi hue.</p>
+<div class="grid">
+{% for field in field_names %}
+<div>
+<label for="{{ rid }}-{{ field }}">{{ field.replace('_', ' ').title() }}</label>
+<input id="{{ rid }}-{{ field }}" name="{{ field }}" value="{{ fields.get(field, '') }}">
+</div>
+{% endfor %}
+</div>
+<button type="submit" name="action" value="save_review">Save review only</button>
+<button type="submit" name="action" value="stage_farmer">Send to Farmer Pending Review</button>
+</form>
+</div>
+{% else %}
+<p>No OCR records found.</p>
+{% endfor %}
+</body>
+</html>
+'''
+
+# Validate the generated Python before touching the user's project files.
+try:
+    compile(updated_app, str(APP_PATH), "exec")
+except SyntaxError as exc:
+    sys.exit(f"ERROR: Generated app.py syntax check failed: {exc}. No project file changed.")
+
+backup_suffix = datetime.now().strftime("%Y%m%d_%H%M%S")
+app_backup = APP_PATH.with_name(f"app.py.bak_ocr_integration_{backup_suffix}")
+template_backup = TEMPLATE_PATH.with_name(f"ocr_review.html.bak_ocr_integration_{backup_suffix}")
+shutil.copy2(APP_PATH, app_backup)
+shutil.copy2(TEMPLATE_PATH, template_backup)
+
+try:
+    APP_PATH.write_text(updated_app, encoding="utf-8")
+    TEMPLATE_PATH.write_text(updated_template, encoding="utf-8")
+except Exception:
+    # Restore both original files if writing either patch fails.
+    shutil.copy2(app_backup, APP_PATH)
+    shutil.copy2(template_backup, TEMPLATE_PATH)
+    raise
+
+print("SUCCESS: OCR upload + human review + farmer staging connected.")
+print("Upload route:", upload_status)
+print("Backup app.py:", app_backup)
+print("Backup ocr_review.html:", template_backup)
+print("Next: run py_compile, restart Flask, then test with a survey copy.")

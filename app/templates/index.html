@@ -1,0 +1,302 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Chara Survey — Review Dashboard</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f4f6f8;
+      color: #202938;
+    }
+
+    header {
+      background: #183b32;
+      color: white;
+      padding: 22px 5%;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 24px auto;
+      padding: 0 16px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+    }
+
+    .stat, .panel, .record {
+      background: white;
+      border-radius: 10px;
+      padding: 16px;
+      box-shadow: 0 1px 4px #0001;
+    }
+
+    .number {
+      font-size: 27px;
+      font-weight: bold;
+      margin-top: 8px;
+    }
+
+    .toolbar, .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin: 18px 0;
+    }
+
+    a.export, button {
+      cursor: pointer;
+      border: 0;
+      border-radius: 6px;
+      padding: 9px 13px;
+      background: #176b50;
+      color: white;
+      text-decoration: none;
+    }
+
+    select, input, textarea {
+      padding: 8px;
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      max-width: 100%;
+    }
+
+    .record {
+      margin: 14px 0;
+      overflow-wrap: anywhere;
+    }
+
+    .fields {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .field {
+      background: #f8fafc;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    .key {
+      color: #64748b;
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+
+    .value {
+      white-space: pre-wrap;
+    }
+
+    .error {
+      color: #a32121;
+      overflow-wrap: anywhere;
+    }
+
+    .warning {
+      color: #895500;
+      overflow-wrap: anywhere;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 20px;
+      background: #e2e8f0;
+      font-size: 12px;
+    }
+
+    .safety {
+      color: #475569;
+      font-size: 13px;
+    }
+
+    .review-note {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <h1>Chara Survey Automation</h1>
+  <div>Phase 4 — Human Review & Export</div>
+</header>
+
+<main>
+  <p class="safety">
+    Local demo only. Verified means reviewed by a human; it does not
+    mean submitted. No Google Form submissions are performed.
+  </p>
+
+  <section class="stats">
+    <div class="stat">
+      Total records
+      <div class="number">{{ counts.total }}</div>
+    </div>
+
+    <div class="stat">
+      Pending decision
+      <div class="number">{{ counts.pending }}</div>
+    </div>
+
+    <div class="stat">
+      Verified
+      <div class="number">{{ counts.verified }}</div>
+    </div>
+
+    <div class="stat">
+      Needs review
+      <div class="number">{{ counts.needs_review }}</div>
+    </div>
+  </section>
+
+  <div class="toolbar">
+    <form method="get">
+      <label for="status">Filter: </label>
+
+      <select id="status" name="status" onchange="this.form.submit()">
+        <option value="all"
+          {% if selected_status == 'all' %}selected{% endif %}>
+          All records
+        </option>
+
+        <option value="ready"
+          {% if selected_status == 'ready' %}selected{% endif %}>
+          Ready
+        </option>
+
+        <option value="needs_review"
+          {% if selected_status == 'needs_review' %}selected{% endif %}>
+          Needs review
+        </option>
+
+        <option value="verified"
+          {% if selected_status == 'verified' %}selected{% endif %}>
+          Verified
+        </option>
+      </select>
+    </form>
+
+    <a class="export" href="{{ url_for('export_csv') }}">
+      Export CSV
+    </a>
+
+    <a class="export" href="{{ url_for('export_excel') }}">
+      Export Excel
+    </a>
+  </div>
+
+  {% for record in records %}
+    <article class="record">
+      <h3>
+        {{ record.fields.get('record_id', record.record_id) }}
+        <span class="badge">{{ record.display_status }}</span>
+      </h3>
+
+      <p>
+        <strong>Village:</strong>
+        {{ record.fields.get('village_name', '') }}
+        &nbsp;
+        <strong>Farmer:</strong>
+        {{ record.fields.get('farmer_name', '') }}
+      </p>
+
+      {% if record.fields.get('validation_errors') %}
+        <p class="error">
+          <strong>Errors:</strong>
+          {{ record.fields.get('validation_errors') }}
+        </p>
+      {% endif %}
+
+      {% if record.fields.get('validation_warnings') %}
+        <p class="warning">
+          <strong>Warnings:</strong>
+          {{ record.fields.get('validation_warnings') }}
+        </p>
+      {% endif %}
+
+      <details>
+        <summary>View all imported fields</summary>
+
+        <div class="fields">
+          {% for key, value in record.fields.items() %}
+            <div class="field">
+              <div class="key">{{ key }}</div>
+              <div class="value">{{ value }}</div>
+            </div>
+          {% endfor %}
+        </div>
+      </details>
+
+      {% if record.updated_at %}
+        <p class="safety">
+          Last review update: {{ record.updated_at }}
+        </p>
+      {% endif %}
+
+      <form method="post" action="{{ url_for('review') }}">
+        <input
+          type="hidden"
+          name="source_file"
+          value="{{ record.source_file }}"
+        >
+
+        <input
+          type="hidden"
+          name="record_id"
+          value="{{ record.record_id }}"
+        >
+
+        <div class="actions">
+          <label class="review-note">
+            Reviewer note
+            <input
+              name="reviewer_note"
+              maxlength="1000"
+              value="{{ record.reviewer_note }}"
+              placeholder="Reason or correction needed"
+            >
+          </label>
+
+          <button name="decision" value="verified" type="submit">
+            Mark verified
+          </button>
+
+          <button name="decision" value="needs_review" type="submit">
+            Needs review
+          </button>
+        </div>
+      </form>
+    </article>
+
+  {% else %}
+    <div class="panel">
+      No records found. Run the demo first to generate a dry-run report.
+    </div>
+  {% endfor %}
+</main>
+
+<div style="margin: 16px 0; text-align: right;">
+  <a href="/upload"
+     style="display:inline-block; padding:11px 16px; background:#185abd;
+            color:white; text-decoration:none; border-radius:6px;">
+    Upload PDF / Image
+  </a>
+</div>
+
+</body>
+</html>

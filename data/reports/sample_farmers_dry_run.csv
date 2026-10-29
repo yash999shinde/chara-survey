@@ -1,0 +1,5 @@
+﻿record_id,village_name,farmer_name,mobile_number,cattle_count,buffalo_count,daily_milk_litres,green_fodder_tonnes,silage_tonnes,dry_fodder_tonnes,water_availability,irrigation_availability,validation_errors,validation_warnings,status
+DEMO-001,नमुना गाव,अमोल पाटील,******10,3,2,18.5,1.25,0.5,2,उपलब्ध,आहे,,,ready
+DEMO-002,चाचणी गाव,सविता शिंदे,******11,1,0,4.0,0.75,,1.5,अपुरे,नाही,,missing_numeric:silage_tonnes,needs_review
+DEMO-003,नमुना गाव,रमेश जाधव,******45,-1,1,abc,0,0,0,अज्ञात,आहे,invalid_mobile_format;negative_value:cattle_count;invalid_number:daily_milk_litres,,needs_review
+DEMO-004,चाचणी गाव,सविता शिंदे,******11,2,1,8,1,0.2,1,उपलब्ध,आहे,,potential_duplicate_mobile,needs_review

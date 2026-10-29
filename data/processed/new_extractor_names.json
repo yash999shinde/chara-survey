@@ -1,0 +1,44 @@
+[
+  {
+    "row": 1,
+    "expected": "आशिष शब्बीर शेख",
+    "name_raw": "डा [11२]५ नष/< नम्भ",
+    "farmer_name": "डा 11२ ५ नष < नम्भ",
+    "exact_match": false
+  },
+  {
+    "row": 2,
+    "expected": "समीर जमाल शेख",
+    "name_raw": "समान जाबाल शग",
+    "farmer_name": "समान जाबाल शग",
+    "exact_match": false
+  },
+  {
+    "row": 3,
+    "expected": "लतीफ जमाल शेख",
+    "name_raw": "लल लॅ]५ ७ बच्चा",
+    "farmer_name": "लल लॅ ५ ७ बच्चा",
+    "exact_match": false
+  },
+  {
+    "row": 4,
+    "expected": "इब्राहिम रुबाब शेख",
+    "name_raw": "राहत रष क",
+    "farmer_name": "राहत रष क",
+    "exact_match": false
+  },
+  {
+    "row": 5,
+    "expected": "नबाब रुबाब शेख",
+    "name_raw": "रग 4 रब ण 1स्ऱ",
+    "farmer_name": "रग 4 रब ण 1स्ऱ",
+    "exact_match": false
+  },
+  {
+    "row": 6,
+    "expected": "बशीर कमाल शेख",
+    "name_raw": "थ्या]. कमाल नाचा",
+    "farmer_name": "थ्या . कमाल नाचा",
+    "exact_match": false
+  }
+]

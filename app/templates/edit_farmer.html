@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+
+{% block title %}नोंद बदला — #{{ farmer.id }} {{ farmer.farmer_name }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10 col-md-12">
+        <div class="card shadow-sm border-0 rounded-3 mb-4">
+            <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="mb-0 text-primary fw-bold">
+                        <i class="bi bi-pencil-square me-2"></i>शेतकरी नोंद तपशील संपादन (Edit Record #{{ farmer.id }})
+                    </h5>
+                    <small class="text-muted">
+                        मूळ फाईल: <strong>{{ farmer.source_file or 'हस्तलिखित / मॅन्युअल' }}</strong> | नोंदणी दिनांक: {{ farmer.created_at or '—' }}
+                    </small>
+                </div>
+                <div>
+                    <a href="/farmers" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-arrow-left me-1"></i> डॅशबोर्डकडे परत
+                    </a>
+                </div>
+            </div>
+
+            <div class="card-body p-4">
+                {% if farmer.is_duplicate %}
+                <div class="alert alert-danger py-2 mb-4 d-flex align-items-center">
+                    <i class="bi bi-exclamation-octagon-fill fs-4 me-3 text-danger"></i>
+                    <div>
+                        <strong>संभाव्य डुप्लिकेट नोंद इशारा:</strong> {{ farmer.duplicate_reason }}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if farmer.review_notes and not farmer.is_duplicate %}
+                <div class="alert alert-warning py-2 mb-4 d-flex align-items-center">
+                    <i class="bi bi-info-circle-fill fs-5 me-2 text-warning"></i>
+                    <div>
+                        <strong>पडताळणी शेरा:</strong> {{ farmer.review_notes }}
+                        {% if farmer.uncertain_fields %}
+                            <div class="small mt-1">अस्पष्ट फील्ड्स: <span class="badge bg-warning text-dark">{{ farmer.uncertain_fields }}</span></div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if farmer.raw_ocr_text %}
+                <div class="card bg-light border mb-4">
+                    <div class="card-body py-2 px-3">
+                        <span class="small fw-bold text-muted"><i class="bi bi-file-earmark-text me-1"></i>दस्तऐवजातील मूळ OCR मजकूर (Raw OCR Text from Survey PDF):</span>
+                        <code class="d-block mt-1 p-2 bg-white border rounded text-dark font-monospace" style="font-size: 0.88rem; white-space: pre-wrap;">{{ farmer.raw_ocr_text }}</code>
+                    </div>
+                </div>
+                {% endif %}
+
+                <form method="POST" action="/farmers/{{ farmer.id }}/edit">
+                    <!-- विभाग १: प्रशासकीय माहिती -->
+                    <div class="border-bottom pb-2 mb-3">
+                        <h6 class="text-secondary text-uppercase fw-bold small">१. प्रशासकीय माहिती</h6>
+                    </div>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-3">
+                            <label class="form-label small fw-semibold">तालुका</label>
+                            <input type="text" class="form-control form-control-sm" name="taluka" value="{{ farmer.taluka or '' }}" placeholder="उदा. नगर">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-semibold">पशुवैद्यकीय दवाखाना</label>
+                            <input type="text" class="form-control form-control-sm" name="veterinary_hospital" value="{{ farmer.veterinary_hospital or '' }}" placeholder="उदा. Ralegan">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-semibold">महसूल मंडळ</label>
+                            <input type="text" class="form-control form-control-sm" name="revenue_circle" value="{{ farmer.revenue_circle or '' }}" placeholder="उदा. Walki">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-semibold">गावाचे नाव <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-control-sm" name="village_name" value="{{ farmer.village_name or '' }}" placeholder="उदा. वडगाव तांदळी" required>
+                        </div>
+                    </div>
+
+                    <!-- विभाग २: शेतकरी माहिती -->
+                    <div class="border-bottom pb-2 mb-3">
+                        <h6 class="text-secondary text-uppercase fw-bold small">२. शेतकरी वैयक्तिक माहिती</h6>
+                    </div>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">शेतकऱ्याचे संपूर्ण नाव <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="farmer_name" value="{{ farmer.farmer_name or '' }}" placeholder="शेतकऱ्याचे नाव मराठीत प्रविष्ट करा" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">मोबाईल क्रमांक (१० अंक)</label>
+                            <input type="text" class="form-control" name="mobile" value="{{ farmer.mobile or '' }}" placeholder="१० अंकी मोबाईल क्रमांक" pattern="^[6-9][0-9]{9}$" title="१० अंकी वैध मोबाईल क्रमांक प्रविष्ट करा (६, ७, ८, किंवा ९ ने सुरू होणारा)">
+                            <div class="form-text small">उदा. 9876543210 (भारतीय मोबाईल क्रमांक)</div>
+                        </div>
+                    </div>
+
+                    <!-- विभाग ३: पशुधन माहिती -->
+                    <div class="border-bottom pb-2 mb-3">
+                        <h6 class="text-secondary text-uppercase fw-bold small">३. पशुधन व दूध उत्पादन</h6>
+                    </div>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-3 col-sm-6">
+                            <label class="form-label small fw-semibold">लहान गायी (संख्या)</label>
+                            <input type="number" min="0" class="form-control form-control-sm" name="cow_small" value="{{ farmer.cow_small or 0 }}">
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <label class="form-label small fw-semibold">मोठ्या गायी (संख्या)</label>
+                            <input type="number" min="0" class="form-control form-control-sm" name="cow_large" value="{{ farmer.cow_large or 0 }}">
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <label class="form-label small fw-semibold">लहान म्हशी (संख्या)</label>
+                            <input type="number" min="0" class="form-control form-control-sm" name="buffalo_small" value="{{ farmer.buffalo_small or 0 }}">
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <label class="form-label small fw-semibold">मोठ्या म्हशी (संख्या)</label>
+                            <input type="number" min="0" class="form-control form-control-sm" name="buffalo_large" value="{{ farmer.buffalo_large or 0 }}">
+                        </div>
+
+                        <div class="col-md-3 col-sm-6">
+                            <label class="form-label small fw-semibold">दुभती जनावरे</label>
+                            <input type="number" min="0" class="form-control form-control-sm" name="milch_animals" value="{{ farmer.milch_animals or 0 }}">
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <label class="form-label small fw-semibold">भाकड जनावरे</label>
+                            <input type="number" min="0" class="form-control form-control-sm" name="dry_animals" value="{{ farmer.dry_animals or 0 }}">
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <label class="form-label small fw-semibold text-primary">दूध उत्पादन (लिटर/दिवस)</label>
+                            <input type="number" step="0.1" min="0" class="form-control form-control-sm fw-bold border-primary" name="daily_milk_litres" value="{{ farmer.daily_milk_litres or 0.0 }}">
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <label class="form-label small fw-semibold">शेळ्या / मेंढ्या</label>
+                            <input type="number" min="0" class="form-control form-control-sm" name="goats" value="{{ farmer.goats or 0 }}">
+                        </div>
+                    </div>
+
+                    <!-- विभाग ४: चारा व सिंचन -->
+                    <div class="border-bottom pb-2 mb-3">
+                        <h6 class="text-secondary text-uppercase fw-bold small">४. चारा उपलब्धता व सिंचन</h6>
+                    </div>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-3 col-sm-6">
+                            <label class="form-label small fw-semibold">हिरवा चारा (टन)</label>
+                            <input type="number" step="0.1" min="0" class="form-control form-control-sm" name="green_fodder_tonnes" value="{{ farmer.green_fodder_tonnes or 0.0 }}">
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <label class="form-label small fw-semibold">मुरघास (टन)</label>
+                            <input type="number" step="0.1" min="0" class="form-control form-control-sm" name="silage_tonnes" value="{{ farmer.silage_tonnes or 0.0 }}">
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <label class="form-label small fw-semibold">सुका चारा (टन)</label>
+                            <input type="number" step="0.1" min="0" class="form-control form-control-sm" name="dry_fodder_tonnes" value="{{ farmer.dry_fodder_tonnes or 0.0 }}">
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <label class="form-label small fw-semibold">रब्बी क्षेत्र (हेक्टर)</label>
+                            <input type="number" step="0.1" min="0" class="form-control form-control-sm" name="rabi_area_hectares" value="{{ farmer.rabi_area_hectares or 0.0 }}">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">पाण्याची उपलब्धता</label>
+                            <select class="form-select form-select-sm" name="water_availability">
+                                <option value="" {% if not farmer.water_availability %}selected{% endif %}>निवडा...</option>
+                                <option value="उपलब्ध" {% if farmer.water_availability == 'उपलब्ध' %}selected{% endif %}>उपलब्ध</option>
+                                <option value="अपुरे" {% if farmer.water_availability == 'अपुरे' %}selected{% endif %}>अपुरे</option>
+                                <option value="नाही" {% if farmer.water_availability == 'नाही' %}selected{% endif %}>नाही</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">सिंचन सोय</label>
+                            <select class="form-select form-select-sm" name="irrigation_available">
+                                <option value="" {% if not farmer.irrigation_available %}selected{% endif %}>निवडा...</option>
+                                <option value="आहे" {% if farmer.irrigation_available == 'आहे' %}selected{% endif %}>आहे</option>
+                                <option value="नाही" {% if farmer.irrigation_available == 'नाही' %}selected{% endif %}>नाही</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">सिंचन साधन / प्रकार</label>
+                            <input type="text" class="form-control form-control-sm" name="irrigation_types" value="{{ farmer.irrigation_types or '' }}" placeholder="उदा. विहीर / बोअरवेल">
+                        </div>
+                    </div>
+
+                    <!-- विभाग ५: पडताळणी स्थिती व शेरा -->
+                    <div class="border-bottom pb-2 mb-3">
+                        <h6 class="text-secondary text-uppercase fw-bold small">५. पडताळणी व शेरा (Verification Status)</h6>
+                    </div>
+                    <div class="row g-3 mb-4 bg-light p-3 rounded-2">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold">स्थिती (Status) <span class="text-danger">*</span></label>
+                            <select class="form-select" name="status" id="statusSelect" required>
+                                <option value="pending_review" {% if farmer.status == 'pending_review' or farmer.status == 'pending' %}selected{% endif %}>पडताळणी प्रलंबित (Pending Review)</option>
+                                <option value="verified" {% if farmer.status == 'verified' %}selected{% endif %}>पडताळणी पूर्ण (Verified by Reviewer)</option>
+                                <option value="needs_review" {% if farmer.status == 'needs_review' %}selected{% endif %}>पुन्हा तपासणी आवश्यक (Needs Review)</option>
+                                <option value="submitted" {% if farmer.status == 'submitted' %}selected{% endif %}>सबमिट केले (Submitted)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label small fw-semibold">पडताळणी शेरा / टिप्पणी (Reviewer Note)</label>
+                            <input type="text" class="form-control" name="review_notes" value="{{ farmer.review_notes or '' }}" placeholder="मूळ फॉर्मशी पडताळणी केली, माहिती अचूक आहे...">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                        <a href="/farmers" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle me-1"></i> रद्द करा
+                        </a>
+                        <div>
+                            <button type="submit" name="submit_action" value="save" class="btn btn-primary me-2">
+                                <i class="bi bi-save me-1"></i> बदल सेव्ह करा (Save Changes)
+                            </button>
+                            <button type="submit" name="submit_action" value="save_and_verify" class="btn btn-success fw-bold" onclick="document.getElementById('statusSelect').value='verified';">
+                                <i class="bi bi-patch-check-fill me-1"></i> सेव्ह करा व Verified करा (Save & Verify)
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

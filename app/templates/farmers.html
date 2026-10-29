@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <title>चारा सर्वेक्षण - शेतकरी डॅशबोर्ड</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .badge-pending { background-color: #ffc107; color: #000; }
+        .badge-verified { background-color: #198754; color: #fff; }
+        .badge-submitted { background-color: #0d6efd; color: #fff; }
+    </style>
+</head>
+<body class="py-4">
+<div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>चारा टंचाई सर्वेक्षण - शेतकरी पडताळणी डॅशबोर्ड</h2>
+            <p class="text-muted mb-0">तालुका: <strong>नगर</strong> | दवाखाना: <strong>Ralegun</strong> | मंडळ: <strong>Walki</strong> | गाव: <strong>वडगाव तांदळी</strong></p>
+        </div>
+        <div>
+            <a href="/farmers/export_excel" class="btn btn-outline-success me-2">Excel Export करा</a>
+            <a href="/upload" class="btn btn-primary">नवीन PDF अपलोड</a>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>गाव</th>
+                            <th>शेतकऱ्याचे नाव</th>
+                            <th>मोबाईल क्रमांक</th>
+                            <th>गायी</th>
+                            <th>म्हशी</th>
+                            <th>दूध (लिटर)</th>
+                            <th>चारा (टन)</th>
+                            <th>स्थिती (Status)</th>
+                            <th class="text-center">कृती (Actions)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for f in farmers %}
+                        <tr>
+                            <td>{{ f.id }}</td>
+                            <td>{{ f.village_name }}</td>
+                            <td><strong>{{ f.farmer_name }}</strong></td>
+                            <td>{{ f.mobile or '<span class="text-danger">अपूर्ण</span>' | safe }}</td>
+                            <td>{{ f.cow_large }}</td>
+                            <td>{{ f.buffalo_large }}</td>
+                            <td>{{ f.daily_milk_litres }}</td>
+                            <td>{{ f.green_fodder_tonnes }}</td>
+                            <td>
+                                {% if f.status == 'verified' %}
+                                    <span class="badge badge-verified px-2 py-1">Verified</span>
+                                {% elif f.status == 'submitted' %}
+                                    <span class="badge badge-submitted px-2 py-1">Submitted</span>
+                                {% else %}
+                                    <span class="badge badge-pending px-2 py-1">Pending Review</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                {% if f.status == 'pending_review' %}
+                                    <form method="POST" action="/farmers/{{ f.id }}/verify" class="d-inline">
+                                        <button class="btn btn-sm btn-success">Verify करा</button>
+                                    </form>
+                                {% elif f.status == 'verified' %}
+                                    <form method="POST" action="/farmers/{{ f.id }}/submit_form" class="d-inline">
+                                        <button class="btn btn-sm btn-primary" onclick="return confirm('Google Form मध्ये सबमिट करायचे का?')">Google Form ला सबमिट करा</button>
+                                    </form>
+                                {% else %}
+                                    <button class="btn btn-sm btn-secondary" disabled>Submitted</button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

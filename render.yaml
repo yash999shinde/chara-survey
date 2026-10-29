@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: chara-survey-automation
+    runtime: docker
+    plan: free
+    region: singapore
+    envVars:
+      - key: FLASK_SECRET_KEY
+        generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: USE_AI_VISION
+        value: "true"
