@@ -25,4 +25,4 @@ ENV FLASK_HOST=0.0.0.0
 ENV FLASK_PORT=5000
 ENV USE_AI_VISION=true
 
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "2", "--timeout", "120", "app.app:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "1", "--threads", "4", "--timeout", "180", "app.app:app"]

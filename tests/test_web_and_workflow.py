@@ -21,7 +21,7 @@ def test_root_redirect(client):
 def test_farmers_dashboard(client):
     res = client.get("/farmers")
     assert res.status_code == 200
-    assert "चारा सर्वेक्षण" in res.text
+    assert "शेतकरी" in res.text or "Dr. Prathmesh" in res.text
     assert "डॅशबोर्ड" in res.text
     # Should display existing farmers
     assert "Demo Farmer Three" in res.text

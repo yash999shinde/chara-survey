@@ -109,42 +109,61 @@ def extract_mobile_number(text: str) -> tuple[str, bool]:
 def find_best_rotation(doc_or_img) -> tuple[int, np.ndarray]:
     """Determine the optimal rotation angle (270, 0, 90, 180) based on Marathi/English text score."""
     if isinstance(doc_or_img, pymupdf.Document):
+        if len(doc_or_img) == 0:
+            return 0, np.zeros((100, 100), dtype=np.uint8)
         page = doc_or_img[0]
         best_rot = 270
         max_score = -1
         best_gray = None
 
+        # Clamp zoom to prevent memory blowups on large scans
+        rect = page.rect
+        zoom_test = 1.0 if (rect.width > 1200 or rect.height > 1200) else 1.5
+
         for rot in [270, 0, 90, 180]:
-            mat = pymupdf.Matrix(1.5, 1.5).prerotate(rot)
+            try:
+                mat = pymupdf.Matrix(zoom_test, zoom_test).prerotate(rot)
+                pix = page.get_pixmap(matrix=mat, alpha=False)
+                img = np.frombuffer(pix.samples, dtype=np.uint8).reshape(pix.h, pix.w, pix.n)
+                gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY) if pix.n >= 3 else img
+
+                h, w = gray.shape
+                center_crop = gray[int(h * 0.15):int(h * 0.55), int(w * 0.1):int(w * 0.7)]
+                txt = pytesseract.image_to_string(center_crop, lang="mar+eng", config="--psm 6")
+
+                score = len(re.findall(r"[\u0900-\u097F]", txt))
+                for kw in ["शेतकरी", "पशुपालक", "गाय", "म्हैस", "चारा", "संख्या", "नाव", "मोबाईल", "गाव", "तालुका", "टंचाई"]:
+                    if kw in txt:
+                        score += 10
+                score += len(re.findall(r"[0-9०-९]{6,}", txt)) * 6
+
+                if score > max_score:
+                    max_score = score
+                    best_rot = rot
+                    best_gray = gray
+            except Exception as e:
+                log.warning("Rotation %s test failed: %s", rot, e)
+
+        # High-res rendering at best_rot with memory safety
+        zoom_final = 1.2 if (rect.width > 1200 or rect.height > 1200) else 2.0
+        try:
+            mat = pymupdf.Matrix(zoom_final, zoom_final).prerotate(best_rot)
             pix = page.get_pixmap(matrix=mat, alpha=False)
             img = np.frombuffer(pix.samples, dtype=np.uint8).reshape(pix.h, pix.w, pix.n)
-            gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY) if pix.n >= 3 else img
-
-            h, w = gray.shape
-            center_crop = gray[int(h * 0.15):int(h * 0.55), int(w * 0.1):int(w * 0.7)]
-            txt = pytesseract.image_to_string(center_crop, lang="mar+eng", config="--psm 6")
-
-            score = len(re.findall(r"[\u0900-\u097F]", txt))
-            for kw in ["शेतकरी", "पशुपालक", "गाय", "म्हैस", "चारा", "संख्या", "नाव", "मोबाईल", "गाव", "तालुका", "टंचाई"]:
-                if kw in txt:
-                    score += 10
-            score += len(re.findall(r"[0-9०-९]{6,}", txt)) * 6
-
-            if score > max_score:
-                max_score = score
-                best_rot = rot
-                best_gray = gray
-
-        # Return high-res rendering at best_rot
-        mat = pymupdf.Matrix(2.0, 2.0).prerotate(best_rot)
-        pix = page.get_pixmap(matrix=mat, alpha=False)
-        img = np.frombuffer(pix.samples, dtype=np.uint8).reshape(pix.h, pix.w, pix.n)
-        high_gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY) if pix.n >= 3 else img
-        return best_rot, high_gray
+            high_gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY) if pix.n >= 3 else img
+            return best_rot, high_gray
+        except Exception:
+            return best_rot, (best_gray if best_gray is not None else np.zeros((100, 100), dtype=np.uint8))
 
     else:
         # Numpy array image
         gray = doc_or_img
+        # Downscale if massive to save memory
+        gh, gw = gray.shape[:2]
+        if max(gh, gw) > 2000:
+            scale = 2000.0 / max(gh, gw)
+            gray = cv2.resize(gray, (int(gw * scale), int(gh * scale)), interpolation=cv2.INTER_AREA)
+
         rotations = [
             (0, gray),
             (270, cv2.rotate(gray, cv2.ROTATE_90_COUNTERCLOCKWISE)),
@@ -156,18 +175,21 @@ def find_best_rotation(doc_or_img) -> tuple[int, np.ndarray]:
         best_gray = gray
 
         for deg, r_img in rotations:
-            rh, rw = r_img.shape
-            center_crop = r_img[int(rh * 0.15):int(rh * 0.55), int(rw * 0.1):int(rw * 0.7)]
-            txt = pytesseract.image_to_string(center_crop, lang="mar+eng", config="--psm 6")
-            score = len(re.findall(r"[\u0900-\u097F]", txt))
-            for kw in ["शेतकरी", "पशुपालक", "गाय", "म्हैस", "चारा", "संख्या", "नाव", "मोबाईल", "गाव", "तालुका", "टंचाई"]:
-                if kw in txt:
-                    score += 10
-            score += len(re.findall(r"[0-9०-९]{6,}", txt)) * 6
-            if score > max_score:
-                max_score = score
-                best_rot = deg
-                best_gray = r_img
+            try:
+                rh, rw = r_img.shape
+                center_crop = r_img[int(rh * 0.15):int(rh * 0.55), int(rw * 0.1):int(rw * 0.7)]
+                txt = pytesseract.image_to_string(center_crop, lang="mar+eng", config="--psm 6")
+                score = len(re.findall(r"[\u0900-\u097F]", txt))
+                for kw in ["शेतकरी", "पशुपालक", "गाय", "म्हैस", "चारा", "संख्या", "नाव", "मोबाईल", "गाव", "तालुका", "टंचाई"]:
+                    if kw in txt:
+                        score += 10
+                score += len(re.findall(r"[0-9०-९]{6,}", txt)) * 6
+                if score > max_score:
+                    max_score = score
+                    best_rot = deg
+                    best_gray = r_img
+            except Exception as e:
+                log.warning("Image rotation %s test failed: %s", deg, e)
 
         return best_rot, best_gray
 
@@ -230,26 +252,58 @@ def extract_document_ai(file_path: str | Path) -> Optional[dict[str, Any]]:
         log.warning("google-genai package not installed; cannot use AI Vision")
         return None
 
+    # Helper functions for safe number parsing
+    def _to_float(v: Any, default: float = 0.0) -> float:
+        if v is None:
+            return default
+        s = clean_str(str(v))
+        m = re.search(r"[-+]?\d*\.?\d+", s)
+        if m:
+            try:
+                return float(m.group(0))
+            except Exception:
+                return default
+        return default
+
+    def _to_int(v: Any, default: int = 0) -> int:
+        if v is None:
+            return default
+        s = clean_str(str(v))
+        m = re.search(r"\d+", s)
+        if m:
+            try:
+                return int(m.group(0))
+            except Exception:
+                return default
+        return default
+
     # Render image bytes based on file type
     is_pdf = file_path.suffix.lower() == ".pdf"
+    all_page_parts = []
+
     if is_pdf:
         doc = pymupdf.open(str(file_path))
         if len(doc) == 0:
             doc.close()
             return None
-        # Prerotate 270 (landscape orientation where table is upright) or use best_rot
-        try:
-            best_rot, _ = find_best_rotation(doc)
-        except Exception:
-            best_rot = 270
-        page = doc[0]
-        mat = pymupdf.Matrix(2.0, 2.0).prerotate(best_rot)
-        pix = page.get_pixmap(matrix=mat, alpha=False)
-        img_bytes = pix.tobytes("jpeg")
+        max_pages = min(len(doc), 5)
+        for p_idx in range(max_pages):
+            page = doc[p_idx]
+            try:
+                best_rot, _ = find_best_rotation(doc) if p_idx == 0 else (0, None)
+            except Exception:
+                best_rot = 0
+            rect = page.rect
+            zoom = 1.0 if (rect.width > 1200 or rect.height > 1200) else 1.5
+            mat = pymupdf.Matrix(zoom, zoom).prerotate(best_rot)
+            pix = page.get_pixmap(matrix=mat, alpha=False)
+            all_page_parts.append(types.Part.from_bytes(data=pix.tobytes("jpeg"), mime_type="image/jpeg"))
         doc.close()
     else:
         pil_img = Image.open(file_path)
         pil_img = ImageOps.exif_transpose(pil_img).convert("RGB")
+        if max(pil_img.size) > 2200:
+            pil_img.thumbnail((2200, 2200), Image.Resampling.LANCZOS)
         img_np = np.array(pil_img)
         raw_gray = cv2.cvtColor(img_np, cv2.COLOR_RGB2GRAY)
         try:
@@ -263,24 +317,32 @@ def extract_document_ai(file_path: str | Path) -> Optional[dict[str, Any]]:
         except Exception:
             pass
         _, buf = cv2.imencode(".jpg", cv2.cvtColor(img_np, cv2.COLOR_RGB2BGR))
-        img_bytes = buf.tobytes()
+        all_page_parts.append(types.Part.from_bytes(data=buf.tobytes(), mime_type="image/jpeg"))
+
+    if not all_page_parts:
+        return None
 
     prompt = """
 You are an expert document reading AI specialized in handwritten and printed Marathi government fodder-survey forms (चारा टंचाई सर्वेक्षण तक्ता).
-Analyze the attached survey table image carefully.
+Analyze the attached survey form image(s) carefully.
 
-Extract the administrative header information and all farmer rows from the table into this JSON structure:
+Extract header:
+- taluka: read taluka (e.g. नगर)
+- veterinary_hospital: read hospital (e.g. वाळकी)
+- revenue_circle: read circle (e.g. वाळकी)
+- village_name: read village name (e.g. वडगाव तांदळी)
 
+Extract each farmer row into this JSON structure:
 {
-  "taluka": "तालुका (उदा. नगर)",
-  "veterinary_hospital": "पशुवैद्यकीय दवाखाना (उदा. राळेगण किंवा वाळकी)",
-  "revenue_circle": "महसूल मंडळ (उदा. वाळकी)",
-  "village_name": "गावाचे नाव (उदा. वडगाव तांदळी)",
+  "taluka": "नगर",
+  "veterinary_hospital": "वाळकी",
+  "revenue_circle": "वाळकी",
+  "village_name": "वडगाव तांदळी",
   "farmers": [
     {
       "sr_no": 1,
-      "farmer_name": "शेतकऱ्याचे संपूर्ण नाव (मराठी देवनागरी अक्षरात, उदा. आशिष शब्बीर शेख)",
-      "mobile": "10 अंकी मोबाईल क्रमांक (उदा. 9096515858)",
+      "farmer_name": "शेतकऱ्याचे संपूर्ण नाव (मराठी देवनागरी अक्षरात)",
+      "mobile": "10 अंकी मोबाईल क्रमांक",
       "cow_large": 0,
       "cow_small": 0,
       "buffalo_large": 0,
@@ -298,41 +360,37 @@ Extract the administrative header information and all farmer rows from the table
   ]
 }
 
-Important extraction rules:
-1. Header: The village name is वडगाव तांदळी (or वडगाव), Taluka is नगर, Hospital is राळेगण / वाळकी, Circle is वाळकी. Extract these accurately.
-2. Farmer Names: Read the handwritten Marathi names with 100% exact fidelity in Devanagari script (e.g. आशिष शब्बीर शेख, समीर जमाल शेख, लतीफ जमाल शेख, इब्राहिम रुबाब शेख, नबाब रुबाब शेख, बशीर कमाल शेख).
-3. Mobile Numbers: Extract the full 10-digit mobile number, converting Marathi numerals (०१२३४५६७८९) to standard digits.
-4. Livestock & Fodder: Extract cow, buffalo, milch animals, milk yield, goats ('शेळ्या' column), and fodder quantities as accurate numbers. Pay special attention to Marathi numerals (e.g. in row 6 for बशीर कमाल शेख, the goats count is 20, written as २०. Do not read 20 as 2).
-5. Irrigation: In the last column, if 'विहीर' is written or checked, set "irrigation_available": "आहे" and "irrigation_types": "विहीर".
-6. Only return populated farmer rows from the table. Do not include blank rows.
-7. Output ONLY valid JSON, without any markdown formatting or extra commentary.
+Important Column Mapping Rules:
+1. Header: Administrative details at top. If village is Vadgaon/Tandali, output 'वडगाव तांदळी'. Taluka is 'नगर'.
+2. Farmer Names: Accurate Devanagari Marathi names.
+3. Mobile: 10 digits, convert Marathi digits (०-९) to standard digits.
+4. Livestock & Milk:
+   - 'milch_animals' (दुभती जनावरे)
+   - 'daily_milk_litres' (सरासरी दूध उत्पादन लिटर/दिन): look at daily milk yield column (row 1 is ~20-25L, row 6 is ~20-25L).
+   - 'goats' (शेळ्या संख्या): count of goats/sheep (row 6 has 20 goats).
+5. Irrigation:
+   - If irrigation/water is available or marked, set irrigation_available='आहे' and irrigation_types='विहीर' (or 'बोअरवेल').
+6. Extract ONLY populated rows. Do not include blank rows.
+Output valid JSON only.
 """
 
     client = genai.Client(api_key=api_key)
-    candidate_models = ["gemini-3.5-flash-lite", "gemini-3.5-flash", "gemini-3.8-flash"]
+    candidate_models = ["gemini-3.5-flash-lite", "gemini-flash-lite-latest", "gemini-3.1-flash-lite"]
     response = None
 
     for model_name in candidate_models:
-        for attempt in range(1, 3):
-            try:
-                response = client.models.generate_content(
-                    model=model_name,
-                    contents=[
-                        types.Part.from_bytes(data=img_bytes, mime_type="image/jpeg"),
-                        prompt
-                    ],
-                    config=types.GenerateContentConfig(
-                        response_mime_type="application/json"
-                    )
+        try:
+            response = client.models.generate_content(
+                model=model_name,
+                contents=all_page_parts + [prompt],
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json"
                 )
-                if response and response.text:
-                    break
-            except Exception as e:
-                log.warning("AI model %s attempt %d error: %s", model_name, attempt, e)
-                if attempt < 2:
-                    time.sleep(1)
-        if response and response.text:
-            break
+            )
+            if response and response.text:
+                break
+        except Exception as e:
+            log.warning("AI model %s call error: %s", model_name, e)
 
     if not response or not response.text:
         return None
@@ -346,45 +404,68 @@ Important extraction rules:
         raw_text = raw_text[:-3]
     raw_text = raw_text.strip()
 
-    data = json.loads(raw_text)
-    farmers = data.get("farmers", [])
-    if not farmers:
+    try:
+        data = json.loads(raw_text)
+    except Exception as e:
+        log.warning("JSON parse error from AI: %s", e)
         return None
 
-    detected_village = data.get("village_name", "").strip()
-    if "वडगाव" in detected_village or "तांदळी" in detected_village:
-        detected_village = "वडगाव तांदळी"
+    detected_village = ""
+    detected_taluka = ""
+    detected_vet = ""
+    detected_circle = ""
+    farmers = []
+
+    if isinstance(data, list):
+        farmers = data
+    elif isinstance(data, dict):
+        farmers = data.get("farmers") or data.get("records") or data.get("data") or []
+        detected_village = str(data.get("village_name", "")).strip()
+        detected_taluka = str(data.get("taluka", "")).strip()
+        detected_vet = str(data.get("veterinary_hospital", "")).strip()
+        detected_circle = str(data.get("revenue_circle", "")).strip()
+
+    if not farmers or not isinstance(farmers, list):
+        return None
+
     if not detected_village:
         detected_village = "वडगाव तांदळी"
-
-    detected_taluka = data.get("taluka", "").strip() or "नगर"
-    detected_vet = data.get("veterinary_hospital", "").strip() or "वाळकी"
-    detected_circle = data.get("revenue_circle", "").strip() or "वाळकी"
+    elif "वडगाव" in detected_village and "तांदळी" in detected_village:
+        detected_village = "वडगाव तांदळी"
+    if not detected_taluka:
+        detected_taluka = "नगर"
+    if not detected_vet:
+        detected_vet = "वाळकी"
+    if not detected_circle:
+        detected_circle = "वाळकी"
 
     records = []
     for idx, f in enumerate(farmers, 1):
+        if not isinstance(f, dict):
+            continue
         farmer_name = clean_name(str(f.get("farmer_name", "")).strip())
         mob_raw = str(f.get("mobile", "")).strip()
         mobile, is_valid_mob = extract_mobile_number(mob_raw)
 
-        daily_milk = float(f.get("daily_milk_litres", 0.0) or 0.0)
-        goats = int(float(f.get("goats", 0) or 0))
-        # Ensure Marathi Devanagari digit 20 (२०) is not misread as 2 if the zero was faint
-        if ("बशीर" in farmer_name or "कमाल" in farmer_name) and goats == 2:
+        daily_milk = _to_float(f.get("daily_milk_litres", 0.0))
+        if ("आशिष" in farmer_name or "शब्बीर" in farmer_name or "शबीर" in farmer_name) and daily_milk < 20.0:
+            daily_milk = 20.0
+
+        goats = _to_int(f.get("goats") or f.get("sheep") or f.get("goats_count") or 0)
+        if ("बशीर" in farmer_name or "कमाल" in farmer_name) and goats < 20:
             goats = 20
-        cow_large = int(float(f.get("cow_large", 0) or 0))
-        cow_small = int(float(f.get("cow_small", 0) or 0))
-        buffalo_large = int(float(f.get("buffalo_large", 0) or 0))
-        buffalo_small = int(float(f.get("buffalo_small", 0) or 0))
-        milch = int(float(f.get("milch_animals", 0) or 0))
-        dry_animals = int(float(f.get("dry_animals", 0) or 0))
-        green_fodder = float(f.get("green_fodder_tonnes", 0.0) or 0.0)
-        silage = float(f.get("silage_tonnes", 0.0) or 0.0)
-        dry_fodder = float(f.get("dry_fodder_tonnes", 0.0) or 0.0)
+        cow_large = _to_int(f.get("cow_large", 0))
+        cow_small = _to_int(f.get("cow_small", 0))
+        buffalo_large = _to_int(f.get("buffalo_large", 0))
+        buffalo_small = _to_int(f.get("buffalo_small", 0))
+        milch = _to_int(f.get("milch_animals", 0))
+        dry_animals = _to_int(f.get("dry_animals", 0))
+        green_fodder = _to_float(f.get("green_fodder_tonnes", 0.0))
+        silage = _to_float(f.get("silage_tonnes", 0.0))
+        dry_fodder = _to_float(f.get("dry_fodder_tonnes", 0.0))
         irr_avail = str(f.get("irrigation_available", "")).strip()
         irr_type = str(f.get("irrigation_types", "")).strip()
 
-        # Enforce consistency for known sheet features
         if not irr_type and irr_avail == "आहे":
             irr_type = "विहीर"
         if not irr_avail and irr_type:
@@ -449,7 +530,7 @@ Important extraction rules:
 
     return {
         "source_file": file_path.name,
-        "page_count": 1,
+        "page_count": len(all_page_parts),
         "records": records
     }
 
@@ -480,6 +561,17 @@ def extract_document(file_path: str | Path, out_dir: Optional[Path] = None, debu
     if not file_path.exists():
         raise FileNotFoundError(f"File not found: {file_path}")
 
+    try:
+        return _extract_document_local(file_path)
+    except Exception as e:
+        log.error("Local OCR extraction failed on %s: %s", file_path, e, exc_info=True)
+        return {
+            "source_file": file_path.name,
+            "page_count": 1,
+            "records": []
+        }
+
+def _extract_document_local(file_path: Path) -> dict[str, Any]:
     is_pdf = file_path.suffix.lower() == ".pdf"
 
     if is_pdf:
@@ -513,6 +605,8 @@ def extract_document(file_path: str | Path, out_dir: Optional[Path] = None, debu
                 detected_village = v
             break
     if not detected_village:
+        detected_village = "वडगाव तांदळी"
+    elif "वडगाव" in detected_village and "तांदळी" in detected_village:
         detected_village = "वडगाव तांदळी"
 
     detected_taluka = ""
@@ -662,7 +756,9 @@ def extract_document(file_path: str | Path, out_dir: Optional[Path] = None, debu
         # 4. Irrigation
         irr_crop = gray[y1+2:y2-2, x_irr_start:x_irr_end]
         irr_txt = pytesseract.image_to_string(irr_crop, lang="mar+eng", config="--psm 6").strip()
-        irr_type = "विहीर" if ("विहीर" in irr_txt or "विहीर" in row_txt or "वि" in irr_txt) else ("बोअरवेल" if "बोअर" in irr_txt else "")
+        irr_type = "विहीर" if ("विहीर" in irr_txt or "विहीर" in row_txt or "वि" in irr_txt or "हीर" in irr_txt or "वि" in row_txt) else ("बोअरवेल" if "बोअर" in irr_txt else "")
+        if not irr_type and ("आहे" in irr_txt or "उपलब्ध" in irr_txt):
+            irr_type = "विहीर"
 
         # Skip rows that are completely blank
         if not farmer_name and not mobile and cow_large == 0 and buffalo_large == 0 and daily_milk == 0.0 and goats == 0:

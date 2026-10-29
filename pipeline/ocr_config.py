@@ -74,6 +74,11 @@ def configure_tesseract() -> tuple[str | None, str | None]:
         Path(r"D:\chara-survey-automation-phase1-2\tessdata"),
         Path(r"C:\Program Files\Tesseract-OCR\tessdata"),
         Path(r"C:\Program Files (x86)\Tesseract-OCR\tessdata"),
+        # Linux / Docker paths
+        Path("/usr/share/tesseract-ocr/5/tessdata"),
+        Path("/usr/share/tesseract-ocr/4.00/tessdata"),
+        Path("/usr/share/tessdata"),
+        Path("/usr/local/share/tessdata"),
     ])
 
     found_data = None

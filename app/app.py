@@ -99,127 +99,140 @@ def upload():
         if not f or not f.filename:
             continue
 
-        raw_filename = secure_filename(f.filename) or "uploaded_file"
-        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        safe_name = f"{timestamp}_{raw_filename}"
-        ext = Path(safe_name).suffix.lower()
+        try:
+            # Preserve extension safely even for Marathi / non-ASCII Unicode names
+            orig_name = f.filename or "uploaded_file"
+            orig_ext = Path(orig_name).suffix.lower()
+            clean_base = secure_filename(Path(orig_name).stem) or "survey_doc"
+            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            safe_name = f"{timestamp}_{clean_base}{orig_ext}"
+            ext = orig_ext
+            raw_filename = orig_name
 
-        saved_path = UPLOAD_DIR / safe_name
-        f.save(saved_path)
+            saved_path = UPLOAD_DIR / safe_name
+            f.save(saved_path)
 
-        # Compute file hash to detect identical duplicate re-uploads
-        content = saved_path.read_bytes()
-        sha256_hash = hashlib.sha256(content).hexdigest()
-        md5_hash = hashlib.md5(content).hexdigest()
-        file_hash = sha256_hash
+            # Compute file hash to detect identical duplicate re-uploads
+            content = saved_path.read_bytes()
+            sha256_hash = hashlib.sha256(content).hexdigest()
+            md5_hash = hashlib.md5(content).hexdigest()
+            file_hash = sha256_hash
 
-        is_dup_file, existing_cnt, existing_batch = is_file_already_imported(
-            file_hash=sha256_hash,
-            alt_hash=md5_hash,
-            filename=raw_filename
-        )
-
-        if is_dup_file and not force_reimport:
-            # Idempotent upload: prevent duplicate rows in database
-            log_upload_audit(
-                upload_batch_id=existing_batch,
-                file_name=raw_filename,
-                file_hash=file_hash,
-                action="duplicate_file_prevented",
-                record_count=existing_cnt,
-                message=f"Duplicate file upload prevented for '{raw_filename}'. Showing existing batch {existing_batch} ({existing_cnt} records)."
+            is_dup_file, existing_cnt, existing_batch = is_file_already_imported(
+                file_hash=sha256_hash,
+                alt_hash=md5_hash,
+                filename=raw_filename
             )
-            flash(
-                f"यशस्वी! ही फाईल ('{raw_filename}') आधीच आयात केलेली आहे (बॅच: {existing_batch}). विद्यमान {existing_cnt} नोंदी खाली दाखवत आहे. (नव्याने वाचण्यासाठी वर 'पुन्हा AI ने वाचा' बटण वापरा किंवा अपलोड करताना 'सक्तीने पुन्हा AI द्वारे प्रोसेस करा' निवडा).",
-                "info"
-            )
-            latest_batch_to_show = existing_batch
-            duplicate_files_prevented += 1
+
+            if is_dup_file and not force_reimport:
+                # Idempotent upload: prevent duplicate rows in database
+                log_upload_audit(
+                    upload_batch_id=existing_batch,
+                    file_name=raw_filename,
+                    file_hash=file_hash,
+                    action="duplicate_file_prevented",
+                    record_count=existing_cnt,
+                    message=f"Duplicate file upload prevented for '{raw_filename}'. Showing existing batch {existing_batch} ({existing_cnt} records)."
+                )
+                flash(
+                    f"यशस्वी! ही फाईल ('{raw_filename}') आधीच आयात केलेली आहे (बॅच: {existing_batch}). विद्यमान {existing_cnt} नोंदी खाली दाखवत आहे. (नव्याने वाचण्यासाठी वर 'पुन्हा AI ने वाचा' बटण वापरा किंवा अपलोड करताना 'सक्तीने पुन्हा AI द्वारे प्रोसेस करा' निवडा).",
+                    "info"
+                )
+                latest_batch_to_show = existing_batch
+                duplicate_files_prevented += 1
+                total_files += 1
+                continue
+
             total_files += 1
-            continue
+            batch_id = f"BATCH-{timestamp}-{uuid.uuid4().hex[:6]}"
+            file_new_records = 0
+            file_dup_records = 0
 
-        total_files += 1
-        batch_id = f"BATCH-{timestamp}-{uuid.uuid4().hex[:6]}"
-        latest_batch_to_show = batch_id
-        file_new_records = 0
-        file_dup_records = 0
+            # 1. OCR Process for PDF and Images
+            if ext in {".pdf", ".png", ".jpg", ".jpeg", ".tif", ".tiff", ".bmp"}:
+                try:
+                    extract_res = extract_document(saved_path, out_dir=PROCESSED_DIR)
+                    extracted_records = extract_res.get("records", [])
 
-        # 1. OCR Process for PDF and Images
-        if ext in {".pdf", ".png", ".jpg", ".jpeg", ".tif", ".tiff", ".bmp"}:
-            try:
-                extract_res = extract_document(saved_path, out_dir=PROCESSED_DIR)
-                extracted_records = extract_res.get("records", [])
+                    with get_connection() as conn:
+                        for rec in extracted_records:
+                            rec["source_file"] = safe_name
+                            rec["upload_batch_id"] = batch_id
+                            rec["file_hash"] = file_hash
+                            farmer_id = insert_farmer(rec, conn=conn)
+                            total_records += 1
+                            file_new_records += 1
+                            if rec.get("is_duplicate"):
+                                duplicate_count += 1
+                                file_dup_records += 1
+                        conn.commit()
 
-                with get_connection() as conn:
-                    for rec in extracted_records:
-                        rec["source_file"] = safe_name
-                        rec["upload_batch_id"] = batch_id
-                        rec["file_hash"] = file_hash
-                        farmer_id = insert_farmer(rec, conn=conn)
-                        total_records += 1
-                        file_new_records += 1
-                        if rec.get("is_duplicate"):
-                            duplicate_count += 1
-                            file_dup_records += 1
-                    conn.commit()
+                    if file_new_records > 0:
+                        latest_batch_to_show = batch_id
 
-                log_upload_audit(
-                    upload_batch_id=batch_id,
-                    file_name=safe_name,
-                    file_hash=file_hash,
-                    action="new_upload",
-                    record_count=file_new_records,
-                    message=f"Successfully extracted and imported {file_new_records} farmer records ({file_dup_records} overlapping/suspected duplicates) into batch {batch_id}."
-                )
+                    log_upload_audit(
+                        upload_batch_id=batch_id,
+                        file_name=safe_name,
+                        file_hash=file_hash,
+                        action="new_upload",
+                        record_count=file_new_records,
+                        message=f"Successfully extracted and imported {file_new_records} farmer records ({file_dup_records} overlapping/suspected duplicates) into batch {batch_id}."
+                    )
 
-            except Exception as exc:
-                errors.append(f"{raw_filename}: OCR प्रक्रिया करताना त्रुटी आली ({str(exc)})")
+                except Exception as exc:
+                    errors.append(f"{raw_filename}: OCR प्रक्रिया करताना त्रुटी आली ({str(exc)})")
 
-        # 2. Tabular Process for CSV and Excel
-        elif ext in {".csv", ".xlsx", ".xlsm"}:
-            try:
-                df_raw = read_tabular(saved_path)
-                mapping_path = CONFIG_DIR / "field_mapping.json"
-                rules_path = CONFIG_DIR / "validation.json"
+            # 2. Tabular Process for CSV and Excel
+            elif ext in {".csv", ".xlsx", ".xlsm"}:
+                try:
+                    df_raw = read_tabular(saved_path)
+                    mapping_path = CONFIG_DIR / "field_mapping.json"
+                    rules_path = CONFIG_DIR / "validation.json"
 
-                mapping = load_mapping(mapping_path)
-                rules = load_rules(rules_path)
+                    mapping = load_mapping(mapping_path)
+                    rules = load_rules(rules_path)
 
-                df_mapped = map_columns(df_raw, mapping)
-                df_validated = validate_records(df_mapped, rules, check_db_duplicates=True)
+                    df_mapped = map_columns(df_raw, mapping)
+                    df_validated = validate_records(df_mapped, rules, check_db_duplicates=True)
 
-                with get_connection() as conn:
-                    for _, row in df_validated.iterrows():
-                        row_dict = dict(row)
-                        row_dict["source_file"] = safe_name
-                        row_dict["upload_batch_id"] = batch_id
-                        row_dict["file_hash"] = file_hash
-                        db_record = canonical_to_db_record(row_dict)
-                        db_record["source_file"] = safe_name
-                        db_record["upload_batch_id"] = batch_id
-                        db_record["file_hash"] = file_hash
-                        farmer_id = insert_farmer(db_record, conn=conn)
-                        total_records += 1
-                        file_new_records += 1
-                        if db_record.get("is_duplicate"):
-                            duplicate_count += 1
-                            file_dup_records += 1
-                    conn.commit()
+                    with get_connection() as conn:
+                        for _, row in df_validated.iterrows():
+                            row_dict = dict(row)
+                            row_dict["source_file"] = safe_name
+                            row_dict["upload_batch_id"] = batch_id
+                            row_dict["file_hash"] = file_hash
+                            db_record = canonical_to_db_record(row_dict)
+                            db_record["source_file"] = safe_name
+                            db_record["upload_batch_id"] = batch_id
+                            db_record["file_hash"] = file_hash
+                            farmer_id = insert_farmer(db_record, conn=conn)
+                            total_records += 1
+                            file_new_records += 1
+                            if db_record.get("is_duplicate"):
+                                duplicate_count += 1
+                                file_dup_records += 1
+                        conn.commit()
 
-                log_upload_audit(
-                    upload_batch_id=batch_id,
-                    file_name=safe_name,
-                    file_hash=file_hash,
-                    action="new_upload",
-                    record_count=file_new_records,
-                    message=f"Successfully imported {file_new_records} tabular farmer records into batch {batch_id}."
-                )
+                    if file_new_records > 0:
+                        latest_batch_to_show = batch_id
 
-            except Exception as exc:
-                errors.append(f"{raw_filename}: डेटा वाचताना त्रुटी आली ({str(exc)})")
+                    log_upload_audit(
+                        upload_batch_id=batch_id,
+                        file_name=safe_name,
+                        file_hash=file_hash,
+                        action="new_upload",
+                        record_count=file_new_records,
+                        message=f"Successfully imported {file_new_records} tabular farmer records into batch {batch_id}."
+                    )
 
-        else:
-            errors.append(f"{raw_filename}: असमर्थित फाईल प्रकार ({ext}).")
+                except Exception as exc:
+                    errors.append(f"{raw_filename}: डेटा वाचताना त्रुटी आली ({str(exc)})")
+
+            else:
+                errors.append(f"{raw_filename}: असमर्थित फाईल प्रकार ({ext}).")
+
+        except Exception as exc:
+            errors.append(f"{getattr(f, 'filename', 'फाईल')}: फाईल हाताळताना त्रुटी आली ({str(exc)})")
 
     if errors:
         for err in errors:
@@ -287,6 +300,21 @@ def export_csv():
 @app.route("/export.xlsx")
 def export_phase1_excel():
     return redirect(url_for("farmers.export_excel"))
+
+@app.errorhandler(413)
+def request_entity_too_large(error):
+    flash("अपलोड केलेली फाईल खूप मोठी आहे (कमाल मर्यादा 50 MB). कृपया लहान आकाराची फाईल अपलोड करा.", "danger")
+    return redirect(url_for("upload"))
+
+@app.errorhandler(500)
+def internal_error(error):
+    flash(f"सर्व्हरवर प्रक्रिया करताना त्रुटी आली. कृपया फाईल तपासा किंवा पुन्हा प्रयत्न करा.", "danger")
+    return redirect(url_for("farmers.list_farmers"))
+
+@app.errorhandler(Exception)
+def unhandled_exception(error):
+    flash(f"प्रक्रिया करताना त्रुटी आली: {str(error)}", "danger")
+    return redirect(url_for("farmers.list_farmers"))
 
 if __name__ == "__main__":
     host = os.environ.get("FLASK_HOST", "0.0.0.0")
