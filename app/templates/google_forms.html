@@ -22,6 +22,45 @@
         </div>
     </div>
 
+    <!-- Aesthetic Google Form Submission Success Banner -->
+    {% if request.args.get('submitted_count') and request.args.get('submitted_count')|int > 0 %}
+    <div class="col-12">
+        <div class="aesthetic-success-receipt p-4 rounded-4 text-white shadow-lg position-relative overflow-hidden" id="googleFormSuccessBanner">
+            <div class="glow-circle glow-circle-1"></div>
+            <div class="glow-circle glow-circle-2"></div>
+            <div class="position-relative z-1 d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="success-icon-wrapper shadow">
+                        <i class="bi bi-send-check-fill"></i>
+                    </div>
+                    <div>
+                        <span class="badge bg-warning text-dark fw-bold px-3 py-1 rounded-pill mb-1">
+                            <i class="bi bi-google me-1"></i> Google Form सबमिशन यशस्वी (Submitted)
+                        </span>
+                        <h4 class="fw-bold mb-1 text-white">
+                            {{ request.args.get('submitted_count') }} शेतकऱ्यांची माहिती Google Form मध्ये थेट भरली गेली! 🎉
+                        </h4>
+                        <p class="mb-0 text-white-50 small">
+                            गुगल सर्व्हरने सर्व प्रतिसाद यशस्वीरित्या स्वीकारले आहेत.
+                        </p>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 align-items-center">
+                    {% if form_meta and form_meta.view_url %}
+                    <a href="{{ form_meta.view_url }}" target="_blank" class="btn btn-warning fw-bold text-dark rounded-pill px-3 py-2 shadow-sm">
+                        <i class="bi bi-box-arrow-up-right me-1"></i> भरलेला Google Form पहा
+                    </a>
+                    {% endif %}
+                    <a href="/farmers" class="btn btn-light rounded-pill px-3 py-2 fw-semibold text-primary">
+                        <i class="bi bi-speedometer2 me-1"></i> डॅशबोर्डवर परत जा
+                    </a>
+                    <button type="button" class="btn-close btn-close-white" aria-label="Close" onclick="document.getElementById('googleFormSuccessBanner').style.display='none'"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
     <!-- Step 1: Form URL Input & Inspection -->
     <div class="col-lg-7 col-md-12">
         <div class="card shadow-sm border-0 rounded-3 mb-4">

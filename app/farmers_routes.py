@@ -52,6 +52,11 @@ def list_farmers():
     upload_batches = get_distinct_upload_batches()
     latest_batch_id = get_latest_batch_id()
 
+    upload_status = request.args.get("upload_status", "").strip()
+    new_records = request.args.get("new_records", "").strip()
+    new_files = request.args.get("new_files", "").strip()
+    dup_records = request.args.get("dup_records", "").strip()
+
     return render_template(
         "farmers_dashboard.html",
         farmers=farmers,
@@ -62,7 +67,11 @@ def list_farmers():
         current_batch=batch or "all",
         source_files=source_files,
         upload_batches=upload_batches,
-        latest_batch_id=latest_batch_id
+        latest_batch_id=latest_batch_id,
+        upload_status=upload_status,
+        new_records=new_records,
+        new_files=new_files,
+        dup_records=dup_records
     )
 
 @farmers_bp.route("/farmers/<int:farmer_id>/edit", methods=["GET", "POST"])

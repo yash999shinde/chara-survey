@@ -1,88 +1,155 @@
 {% extends "base.html" %}
 
-{% block title %}बल्क फाईल अपलोड — चारा सर्वेक्षण{% endblock %}
+{% block title %}बल्क फाईल अपलोड — चारा सर्वेक्षण ऑटोमेशन{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-lg-8 col-md-10">
-        <div class="card shadow-sm border-0 rounded-3">
-            <div class="card-header bg-white py-3 border-bottom">
-                <h4 class="mb-0 text-primary fw-bold">
-                    <i class="bi bi-cloud-arrow-up-fill me-2"></i>शेतकरी सर्वेक्षण फाईल्स बल्क अपलोड
-                </h4>
-                <small class="text-muted">
-                    स्कॅन केलेले PDF, प्रतिमा किंवा Excel/CSV फाईल्स एकाच वेळी अपलोड करा
-                </small>
+        <div class="card shadow border-0 rounded-4 overflow-hidden">
+            <!-- Header with Gradient Accent -->
+            <div class="card-header bg-white py-4 px-4 border-bottom position-relative">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-primary bg-opacity-10 text-primary p-3 rounded-circle me-3">
+                            <i class="bi bi-cloud-arrow-up-fill fs-2"></i>
+                        </div>
+                        <div>
+                            <h4 class="mb-1 text-primary fw-bold">
+                                शेतकरी सर्वेक्षण फाईल्स अपलोड
+                            </h4>
+                            <p class="text-muted small mb-0">
+                                स्कॅन केलेले PDF, मोबाईल कॅमेरा फोटो किंवा Excel/CSV फाईल निवडा
+                            </p>
+                        </div>
+                    </div>
+                    <span class="badge bg-success bg-opacity-10 text-success border border-success px-3 py-2 rounded-pill fw-semibold">
+                        <i class="bi bi-robot me-1"></i> Gemini 3.5 Vision AI
+                    </span>
+                </div>
             </div>
 
             <div class="card-body p-4">
-                <div class="alert alert-info d-flex align-items-center mb-4">
-                    <i class="bi bi-info-circle-fill fs-4 me-3 text-primary"></i>
+                <!-- Info Alert -->
+                <div class="alert alert-light border border-info border-start border-4 rounded-3 d-flex align-items-center mb-4 p-3 shadow-sm">
+                    <div class="bg-info bg-opacity-10 text-info p-2 rounded-circle me-3">
+                        <i class="bi bi-info-circle-fill fs-4"></i>
+                    </div>
                     <div class="small">
-                        <strong>समर्थित फाईल प्रकार:</strong>
-                        <ul class="mb-0 ps-3">
-                            <li><strong>PDF व प्रतिमा (OCR):</strong> .pdf, .png, .jpg, .jpeg, .tiff, .bmp (मराठी/इंग्रजी हस्तलिखित व मुद्रित तक्ते)</li>
-                            <li><strong>स्प्रेडशीट (डेटा मॅपिंग):</strong> .xlsx, .xlsm, .csv (मराठी युनिकोड व फोन नंबर सुरक्षितता)</li>
-                        </ul>
+                        <strong class="text-dark">समर्थित फाईल प्रकार:</strong>
+                        <div class="text-secondary mt-1">
+                            • <strong>PDF व कॅमेरा फोटो:</strong> .pdf, .jpg, .jpeg, .png (हस्तलिखित मराठी सर्व्हे फॉर्म)<br>
+                            • <strong>स्प्रेडशीट:</strong> .xlsx, .csv (मराठी युनिकोड व मोबाईल क्रमांक सुरक्षित)
+                        </div>
                     </div>
                 </div>
 
                 <form method="POST" action="/upload" enctype="multipart/form-data" id="uploadForm">
-                    <div class="mb-4">
-                        <label class="form-label fw-bold">फाईल्स निवडा किंवा कॅमेऱ्याने फोटो काढा</label>
-                        <div class="d-flex gap-2 mb-2">
-                            <input class="form-control form-control-lg" type="file" name="files" multiple accept=".pdf,.png,.jpg,.jpeg,.tif,.tiff,.bmp,.csv,.xlsx,.xlsm" id="fileInput">
-                            <button type="button" class="btn btn-outline-primary d-flex align-items-center px-3 fw-semibold text-nowrap" onclick="document.getElementById('cameraInput').click()" title="मोबाईल कॅमेऱ्याने थेट फोटो काढा">
-                                <i class="bi bi-camera-fill me-2 fs-5"></i> कॅमेरा (Photo)
-                            </button>
+                    <!-- Dropzone Container -->
+                    <div class="dropzone-box mb-4 position-relative" id="dropzoneContainer" onclick="triggerFileInput()">
+                        <div id="dropzonePrompt">
+                            <div class="mb-3">
+                                <i class="bi bi-file-earmark-arrow-up text-primary" style="font-size: 3.5rem;"></i>
+                            </div>
+                            <h5 class="fw-bold text-dark mb-1">सर्व्हे फाईल निवडा किंवा येथे ड्रॅग करा</h5>
+                            <p class="text-muted small mb-3">
+                                कागदी तक्त्याचा फोटो किंवा PDF फाईल निवडा
+                            </p>
+                            <div class="d-flex justify-content-center gap-2 flex-wrap" onclick="event.stopPropagation()">
+                                <button type="button" class="btn btn-primary px-4 py-2 fw-semibold rounded-pill shadow-sm" onclick="triggerFileInput()">
+                                    <i class="bi bi-folder2-open me-2"></i> फाईल निवडा (Choose File)
+                                </button>
+                                <button type="button" class="btn btn-outline-primary px-4 py-2 fw-semibold rounded-pill shadow-sm" onclick="document.getElementById('cameraInput').click()">
+                                    <i class="bi bi-camera-fill me-2 fs-5"></i> कॅमेरा फोटो (Camera)
+                                </button>
+                            </div>
                         </div>
-                        <input type="file" name="files" accept="image/*" capture="environment" id="cameraInput" class="d-none" onchange="handleCameraSelect(this)">
-                        <div class="form-text small mt-2">
-                            <i class="bi bi-phone-fill me-1 text-primary"></i> <strong>Android मोबाईल सपोर्ट:</strong> तुम्ही मोबाईल कॅमेऱ्याने थेट कागदी तक्त्याचा फोटो काढून किंवा PDF निवडून अपलोड करू शकता.
+
+                        <!-- Selected File Preview Card (Hidden initially) -->
+                        <div id="selectedFilePreview" class="d-none text-start p-3 bg-white rounded-3 border shadow-sm" onclick="event.stopPropagation()">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div id="fileTypeIcon" class="p-3 rounded-circle bg-light fs-3">
+                                        <i class="bi bi-file-earmark-pdf text-danger"></i>
+                                    </div>
+                                    <div>
+                                        <span class="badge bg-success bg-opacity-10 text-success border border-success mb-1">
+                                            <i class="bi bi-check-circle-fill me-1"></i> फाईल निवडली आहे (Ready)
+                                        </span>
+                                        <h6 class="mb-0 fw-bold text-dark text-truncate" id="selectedFileName" style="max-width: 320px;"></h6>
+                                        <small class="text-muted" id="selectedFileSize"></small>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill" onclick="resetFileSelection()">
+                                    <i class="bi bi-arrow-repeat me-1"></i> बदला
+                                </button>
+                            </div>
                         </div>
+
+                        <!-- Hidden native file inputs -->
+                        <input class="d-none" type="file" name="files" multiple accept=".pdf,.png,.jpg,.jpeg,.tif,.tiff,.bmp,.csv,.xlsx,.xlsm" id="fileInput" onchange="handleFileSelect(this)">
+                        <input class="d-none" type="file" name="files" accept="image/*" capture="environment" id="cameraInput" onchange="handleFileSelect(this)">
                     </div>
 
-                    <div class="mb-4 bg-light p-3 rounded-2 border">
+                    <!-- Processing Options -->
+                    <div class="mb-4 bg-light p-3 rounded-3 border">
                         <div class="form-check form-switch mb-2">
                             <input class="form-check-input" type="checkbox" name="detect_duplicates" value="1" id="detectDup" checked>
-                            <label class="form-check-label fw-semibold" for="detectDup">
+                            <label class="form-check-label fw-semibold text-dark" for="detectDup">
                                 संभाव्य डुप्लिकेट नोंदी आपोआप तपासा (Detect Duplicates)
                             </label>
                         </div>
                         <small class="text-muted d-block ps-4 mb-3">
-                            मोबाईल क्रमांक व गाव-शेतकरी नावाची जुळणी करून डुप्लिकेट नोंदींना त्वरित इशारा ध्वजांकित केले जाईल.
+                            मोबाईल क्रमांक व नावाची जुळणी करून डुप्लिकेट नोंदींना सुरक्षित इशारा दिला जाईल.
                         </small>
 
                         <div class="form-check form-switch mb-1">
                             <input class="form-check-input" type="checkbox" name="force" value="1" id="forceReimport">
                             <label class="form-check-label fw-semibold text-primary" for="forceReimport">
-                                <i class="bi bi-robot me-1"></i> सक्तीने पुन्हा AI द्वारे प्रोसेस करा (Force Re-process with AI Vision)
+                                <i class="bi bi-robot me-1"></i> सक्तीने पुन्हा AI द्वारे प्रोसेस करा (Force AI Re-Process)
                             </label>
                         </div>
                         <small class="text-muted d-block ps-4">
-                            ही फाईल आधी अपलोड केलेली असली तरीही नव्याने AI व्हिजनद्वारे शेतकऱ्यांची नावे व डेटा अचूक काढून नवीन बॅच तयार करेल.
+                            ही फाईल आधी अपलोड केलेली असली तरीही नव्याने AI द्वारे पूर्ण तक्ता वाचून नवीन बॅच तयार करेल.
                         </small>
                     </div>
 
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-primary btn-lg fw-bold" type="submit" id="submitBtn">
-                            <i class="bi bi-upload me-2"></i>अपलोड व प्रक्रिया सुरू करा (Process Files)
+                    <!-- Submit Button -->
+                    <div class="d-grid gap-2" id="submitActionGroup">
+                        <button class="btn btn-primary btn-lg fw-bold rounded-pill shadow py-3" type="submit" id="submitBtn">
+                            <i class="bi bi-cloud-arrow-up-fill me-2 fs-5"></i>अपलोड व प्रक्रिया सुरू करा (Process Files)
                         </button>
                     </div>
 
-                    <!-- Processing Spinner (Hidden initially) -->
-                    <div id="processingIndicator" class="text-center py-4 d-none">
-                        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-                            <span class="visually-hidden">Loading...</span>
+                    <!-- Aesthetic Animated Processing Overlay (Hidden initially) -->
+                    <div id="processingIndicator" class="d-none text-center py-4 px-3 bg-white rounded-4 border shadow-sm">
+                        <div class="mb-3 position-relative d-inline-block">
+                            <div class="ai-scan-pulse p-3 rounded-circle bg-primary bg-opacity-10 text-primary d-inline-flex align-items-center justify-content-center" style="width: 85px; height: 85px;">
+                                <i class="bi bi-robot" style="font-size: 2.8rem;"></i>
+                            </div>
                         </div>
-                        <h6 class="mt-3 text-dark fw-bold">फाईल्स वाचत आहे व OCR प्रक्रिया चालू आहे...</h6>
-                        <p class="small text-muted mb-0">कृपया प्रतीक्षा करा, फाईल आकारानुसार काही सेकंद लागू शकतात.</p>
+
+                        <h5 class="fw-bold text-dark mb-1" id="processingMainHeading">
+                            सर्व्हे फॉर्म प्रक्रिया चालू आहे...
+                        </h5>
+                        <p class="text-primary fw-semibold small mb-3" id="processingStatusTicker">
+                            <i class="bi bi-arrow-repeat me-1"></i> फाईल सुरक्षितपणे सर्व्हरवर लोड होत आहे...
+                        </p>
+
+                        <!-- Striped Animated Progress Bar -->
+                        <div class="progress mb-3" style="height: 10px; border-radius: 10px;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" id="processingProgressBar" role="progressbar" style="width: 25%;"></div>
+                        </div>
+
+                        <div class="alert alert-light border small text-muted mb-0 py-2">
+                            <i class="bi bi-shield-lock-fill text-success me-1"></i>
+                            <strong>कृपया प्रतीक्षा करा:</strong> काही सेकंदात सर्व शेतकरी नोंदी तयार होतील. रिफ्रेश किंवा बॅक करू नका.
+                        </div>
                     </div>
                 </form>
             </div>
 
             <div class="card-footer bg-light py-3 border-top text-center">
-                <a href="/farmers" class="text-decoration-none">
+                <a href="/farmers" class="text-decoration-none fw-semibold">
                     <i class="bi bi-arrow-left me-1"></i> शेतकरी नोंदी डॅशबोर्ड पहा (Go to Dashboard)
                 </a>
             </div>
@@ -95,18 +162,113 @@
 <script>
     const form = document.getElementById('uploadForm');
     const submitBtn = document.getElementById('submitBtn');
-    const spinner = document.getElementById('processingIndicator');
+    const submitActionGroup = document.getElementById('submitActionGroup');
+    const processingIndicator = document.getElementById('processingIndicator');
+    const dropzoneContainer = document.getElementById('dropzoneContainer');
+    const dropzonePrompt = document.getElementById('dropzonePrompt');
+    const selectedFilePreview = document.getElementById('selectedFilePreview');
+    const selectedFileName = document.getElementById('selectedFileName');
+    const selectedFileSize = document.getElementById('selectedFileSize');
+    const fileTypeIcon = document.getElementById('fileTypeIcon');
+    const mainHeading = document.getElementById('processingMainHeading');
+    const statusTicker = document.getElementById('processingStatusTicker');
+    const progressBar = document.getElementById('processingProgressBar');
 
-    form.addEventListener('submit', function() {
-        submitBtn.disabled = true;
-        submitBtn.classList.add('d-none');
-        spinner.classList.remove('d-none');
-    });
+    function triggerFileInput() {
+        document.getElementById('fileInput').click();
+    }
 
-    function handleCameraSelect(input) {
+    function handleFileSelect(input) {
         if (input.files && input.files.length > 0) {
-            form.submit();
+            const file = input.files[0];
+            selectedFileName.textContent = file.name;
+            const sizeKB = (file.size / 1024).toFixed(1);
+            const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+            selectedFileSize.textContent = file.size > 1048576 ? `${sizeMB} MB` : `${sizeKB} KB`;
+
+            // Change icon based on extension
+            const ext = file.name.split('.').pop().toLowerCase();
+            if (ext === 'pdf') {
+                fileTypeIcon.innerHTML = '<i class="bi bi-file-earmark-pdf-fill text-danger fs-2"></i>';
+            } else if (['jpg', 'jpeg', 'png', 'bmp', 'tiff', 'tif'].includes(ext)) {
+                fileTypeIcon.innerHTML = '<i class="bi bi-file-earmark-image-fill text-primary fs-2"></i>';
+            } else if (['csv', 'xlsx', 'xlsm'].includes(ext)) {
+                fileTypeIcon.innerHTML = '<i class="bi bi-file-earmark-excel-fill text-success fs-2"></i>';
+            } else {
+                fileTypeIcon.innerHTML = '<i class="bi bi-file-earmark-text-fill text-secondary fs-2"></i>';
+            }
+
+            dropzonePrompt.classList.add('d-none');
+            selectedFilePreview.classList.remove('d-none');
         }
     }
+
+    function resetFileSelection() {
+        document.getElementById('fileInput').value = '';
+        document.getElementById('cameraInput').value = '';
+        selectedFilePreview.classList.add('d-none');
+        dropzonePrompt.classList.remove('d-none');
+    }
+
+    // Drag and drop handlers
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropzoneContainer.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropzoneContainer.classList.add('dragover');
+        });
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropzoneContainer.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropzoneContainer.classList.remove('dragover');
+        });
+    });
+
+    dropzoneContainer.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        if (dt.files && dt.files.length > 0) {
+            document.getElementById('fileInput').files = dt.files;
+            handleFileSelect(document.getElementById('fileInput'));
+        }
+    });
+
+    // Dynamic Step-by-Step Progress Animation
+    form.addEventListener('submit', function(e) {
+        const fileInput = document.getElementById('fileInput');
+        const cameraInput = document.getElementById('cameraInput');
+        const hasFiles = (fileInput.files && fileInput.files.length > 0) || (cameraInput.files && cameraInput.files.length > 0);
+
+        if (!hasFiles) {
+            e.preventDefault();
+            alert("कृपया प्रथम एक फाईल निवडा किंवा कॅमेऱ्याने फोटो काढा!");
+            triggerFileInput();
+            return;
+        }
+
+        submitActionGroup.classList.add('d-none');
+        processingIndicator.classList.remove('d-none');
+
+        // Step Ticker
+        const steps = [
+            { text: "📤 पायरी १/४: फाईल सुरक्षितपणे सर्व्हरवर लोड होत आहे...", progress: 30 },
+            { text: "🤖 पायरी २/४: Gemini 3.5 Flash AI व्हिजन मराठी तक्ता वाचत आहे...", progress: 60 },
+            { text: "🔍 पायरी ३/४: शेतकरी नावे, मोबाईल व दुधाचे लिटर पडताळत आहे...", progress: 85 },
+            { text: "💾 पायरी ४/४: डेटाबेसमध्ये साठवून डॅशबोर्ड तयार करत आहे...", progress: 95 }
+        ];
+
+        let stepIdx = 0;
+        const interval = setInterval(() => {
+            stepIdx++;
+            if (stepIdx < steps.length) {
+                statusTicker.innerHTML = `<i class="bi bi-arrow-repeat me-1"></i> ${steps[stepIdx].text}`;
+                progressBar.style.width = `${steps[stepIdx].progress}%`;
+            } else {
+                clearInterval(interval);
+            }
+        }, 1600);
+    });
 </script>
 {% endblock %}

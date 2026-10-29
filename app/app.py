@@ -245,6 +245,21 @@ def upload():
         flash("कोणत्याही नोंदी आढळल्या नाहीत.", "info")
 
     if latest_batch_to_show:
+        if total_records > 0:
+            return redirect(url_for(
+                "farmers.list_farmers",
+                batch=latest_batch_to_show,
+                upload_status="success",
+                new_records=total_records,
+                new_files=(total_files - duplicate_files_prevented),
+                dup_records=duplicate_count
+            ))
+        elif duplicate_files_prevented > 0:
+            return redirect(url_for(
+                "farmers.list_farmers",
+                batch=latest_batch_to_show,
+                upload_status="duplicate"
+            ))
         return redirect(url_for("farmers.list_farmers", batch=latest_batch_to_show))
     return redirect(url_for("farmers.list_farmers"))
 

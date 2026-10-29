@@ -25,6 +25,135 @@
     </div>
 </div>
 
+<!-- Aesthetic Upload Receipt & Success Card (Shown on Successful Upload) -->
+{% if upload_status == 'success' or request.args.get('upload_status') == 'success' %}
+<div class="aesthetic-success-receipt mb-4 p-4 rounded-4 text-white position-relative overflow-hidden" id="uploadSuccessBanner">
+    <div class="glow-circle glow-circle-1"></div>
+    <div class="glow-circle glow-circle-2"></div>
+
+    <div class="position-relative z-1">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="success-icon-wrapper shadow">
+                    <i class="bi bi-check2"></i>
+                </div>
+                <div>
+                    <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                        <span class="badge bg-warning text-dark fw-bold px-3 py-1 rounded-pill">
+                            <i class="bi bi-patch-check-fill me-1"></i>फॉर्म यशस्वीरित्या सेव्ह झाला! (Upload Success)
+                        </span>
+                        <span class="badge bg-white bg-opacity-25 text-white border border-white border-opacity-50 px-3 py-1 rounded-pill">
+                            <i class="bi bi-robot me-1"></i>Gemini AI द्वारे पडताळणी पूर्ण
+                        </span>
+                    </div>
+                    <h3 class="fw-bold mb-1 text-white">
+                        तुमचा सर्व्हे फॉर्म यशस्वीरित्या अपलोड झाला आहे! 🎉
+                    </h3>
+                    <p class="mb-0 text-white-50 small">
+                        हस्तलिखित सर्व्हे तक्ता वाचून सर्व शेतकरी नोंदी स्थानिक डेटाबेसमध्ये अचूक साठवल्या गेल्या आहेत.
+                    </p>
+                </div>
+            </div>
+            <div>
+                <button type="button" class="btn-close btn-close-white" aria-label="Close" onclick="document.getElementById('uploadSuccessBanner').style.display='none'"></button>
+            </div>
+        </div>
+
+        <!-- 4 Quick Stats Glass Cards -->
+        <div class="row g-3 mt-2">
+            <div class="col-lg-3 col-6">
+                <div class="glass-stat-card p-3 rounded-3 shadow-sm h-100">
+                    <div class="text-white-50 small fw-semibold"><i class="bi bi-file-earmark-pdf-fill me-1 text-warning"></i>अपलोड केलेली फाईल</div>
+                    <div class="fw-bold text-white text-truncate mt-1 fs-6" title="{{ farmers[0].source_file if farmers else 'सर्व्हे फाईल' }}">
+                        {{ farmers[0].source_file if farmers else 'सर्व्हे फाईल' }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="glass-stat-card p-3 rounded-3 shadow-sm h-100">
+                    <div class="text-white-50 small fw-semibold"><i class="bi bi-people-fill me-1 text-warning"></i>काढलेल्या शेतकरी नोंदी</div>
+                    <div class="fw-bold text-white fs-5 mt-1">
+                        {{ new_records or (farmers|length) }} नोंदी उपलब्ध
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="glass-stat-card p-3 rounded-3 shadow-sm h-100">
+                    <div class="text-white-50 small fw-semibold"><i class="bi bi-geo-alt-fill me-1 text-warning"></i>गाव व तालुका</div>
+                    <div class="fw-bold text-white text-truncate mt-1 fs-6">
+                        {{ farmers[0].village_name if farmers else 'वडगाव तांदळी' }} ({{ farmers[0].taluka if farmers else 'नगर' }})
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="glass-stat-card p-3 rounded-3 shadow-sm h-100">
+                    <div class="text-white-50 small fw-semibold"><i class="bi bi-layers-fill me-1 text-warning"></i>बॅच आयडी</div>
+                    <div class="fw-bold text-white font-monospace text-truncate mt-1 fs-6" title="{{ current_batch }}">
+                        {{ current_batch }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Direct Quick Actions -->
+        <div class="d-flex flex-wrap gap-2 mt-3 pt-3 border-top border-white border-opacity-25 align-items-center">
+            <a href="/google_forms?batch={{ current_batch }}" class="btn btn-warning fw-bold text-dark px-3 py-2 shadow-sm d-flex align-items-center rounded-pill">
+                <i class="bi bi-google me-2 text-dark"></i>
+                या बॅचचे Google Form ऑटो-भरा (Auto-Fill Google Form)
+            </a>
+            <a href="/farmers/export_excel?batch={{ current_batch }}" class="btn btn-light bg-white text-success fw-bold px-3 py-2 shadow-sm d-flex align-items-center rounded-pill">
+                <i class="bi bi-file-earmark-excel-fill me-2 text-success"></i>
+                या बॅचचे Excel डाऊनलोड करा
+            </a>
+            <a href="/upload" class="btn btn-outline-light fw-semibold px-3 py-2 d-flex align-items-center rounded-pill">
+                <i class="bi bi-cloud-arrow-up-fill me-2"></i>
+                आणखी नवीन फॉर्म अपलोड करा
+            </a>
+            <button type="button" class="btn btn-link text-white text-decoration-none ms-auto small" onclick="document.getElementById('farmersTableCard').scrollIntoView({behavior: 'smooth'})">
+                नोंदींची यादी पहा <i class="bi bi-arrow-down-short fs-5"></i>
+            </button>
+        </div>
+    </div>
+</div>
+{% elif upload_status == 'duplicate' or request.args.get('upload_status') == 'duplicate' %}
+<div class="aesthetic-info-receipt mb-4 p-4 rounded-4 text-white position-relative overflow-hidden" id="uploadDupBanner">
+    <div class="glow-circle glow-circle-1" style="background: #60a5fa;"></div>
+
+    <div class="position-relative z-1">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="success-icon-wrapper shadow" style="background: rgba(255, 255, 255, 0.2); color: #93c5fd;">
+                    <i class="bi bi-info-circle-fill"></i>
+                </div>
+                <div>
+                    <span class="badge bg-light text-primary fw-bold px-3 py-1 rounded-pill mb-1">
+                        <i class="bi bi-shield-check me-1"></i>डुप्लिकेट प्रतिबंध (Duplicate Prevented)
+                    </span>
+                    <h3 class="fw-bold mb-1 text-white">
+                        ही फाईल आधीच सुरक्षितपणे सेव्ह केलेली आहे!
+                    </h3>
+                    <p class="mb-0 text-white-50 small">
+                        डबल नोंदी टाळण्यासाठी सिस्टीमने आधीच्याच बॅचमधील सर्व शेतकरी नोंदी खाली दाखवल्या आहेत.
+                    </p>
+                </div>
+            </div>
+            <div>
+                <button type="button" class="btn-close btn-close-white" aria-label="Close" onclick="document.getElementById('uploadDupBanner').style.display='none'"></button>
+            </div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 mt-3 pt-3 border-top border-white border-opacity-25 align-items-center">
+            <a href="/google_forms?batch={{ current_batch }}" class="btn btn-warning fw-bold text-dark px-3 py-2 shadow-sm rounded-pill">
+                <i class="bi bi-google me-1"></i> Google Form ऑटो-भरा
+            </a>
+            <a href="/upload" class="btn btn-light text-primary fw-semibold px-3 py-2 rounded-pill">
+                <i class="bi bi-cloud-arrow-up-fill me-1"></i> नवीन फाईल अपलोड करा
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <div class="row g-3 mb-4">
     <!-- KPI 1: Total Records -->
     <div class="col-md-3 col-sm-6">
@@ -311,6 +440,9 @@
                                 <div class="btn-group btn-group-sm" role="group">
                                     <a href="/farmers/{{ f.id }}/edit" class="btn btn-outline-primary" title="नोंद बदला (Edit Record)">
                                         <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <a href="/google_forms/prefill/{{ f.id }}" target="_blank" class="btn btn-outline-warning" title="Google Form थेट भरा (1-Click Google Form Auto-Fill)">
+                                        <i class="bi bi-google"></i>
                                     </a>
                                     {% if f.status != 'verified' %}
                                         <button type="button" class="btn btn-outline-success" title="पडताळणी पूर्ण करा (Verify)" onclick="verifySingle('{{ f.id }}')">

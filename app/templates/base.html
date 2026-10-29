@@ -54,6 +54,91 @@
         .badge-needs-review { background-color: #fd7e14; color: white; }
         .badge-submitted { background-color: #0d6efd; color: white; }
         .badge-duplicate { background-color: #dc3545; color: white; }
+
+        /* Aesthetic Receipts & Cards */
+        .aesthetic-success-receipt {
+            background: linear-gradient(135deg, #09472a 0%, #198754 60%, #157347 100%);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 12px 35px rgba(25, 135, 84, 0.25);
+        }
+        .aesthetic-info-receipt {
+            background: linear-gradient(135deg, #12376b 0%, #1f497d 60%, #2e75b6 100%);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 12px 35px rgba(31, 73, 125, 0.25);
+        }
+        .success-icon-wrapper {
+            width: 64px;
+            height: 64px;
+            min-width: 64px;
+            background: rgba(255, 255, 255, 0.22);
+            border: 2px solid rgba(255, 255, 255, 0.65);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            color: #ffda6a;
+            animation: pulseCheck 2s infinite ease-in-out;
+        }
+        @keyframes pulseCheck {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 218, 106, 0.6); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 14px rgba(255, 218, 106, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 218, 106, 0); }
+        }
+        .glow-circle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(55px);
+            opacity: 0.28;
+            pointer-events: none;
+        }
+        .glow-circle-1 {
+            width: 260px;
+            height: 260px;
+            background: #ffda6a;
+            top: -70px;
+            right: -50px;
+        }
+        .glow-circle-2 {
+            width: 220px;
+            height: 220px;
+            background: #20c997;
+            bottom: -60px;
+            left: 25%;
+        }
+        .glass-stat-card {
+            background: rgba(255, 255, 255, 0.16);
+            border: 1px solid rgba(255, 255, 255, 0.26);
+            backdrop-filter: blur(8px);
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+        .glass-stat-card:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.24);
+        }
+        .dropzone-box {
+            border: 2px dashed #2e75b6;
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 2.2rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s ease-in-out;
+        }
+        .dropzone-box:hover, .dropzone-box.dragover {
+            border-color: #1f497d;
+            background: #eef5fc;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(46, 117, 182, 0.18);
+        }
+        @keyframes scanPulse {
+            0%, 100% { opacity: 0.65; transform: scale(0.97); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+        .ai-scan-pulse {
+            animation: scanPulse 1.8s infinite ease-in-out;
+        }
+
         footer {
             margin-top: auto;
             background-color: #e9ecef;

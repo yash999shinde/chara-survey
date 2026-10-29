@@ -137,7 +137,13 @@ def submit_all_farmers():
     if fail_count > 0:
         flash(f"{fail_count} फॉर्म सबमिशन करताना अडचणी आल्या: {'; '.join(errors[:3])}", "warning")
 
-    return redirect(url_for("google_forms.google_forms_dashboard", form_url=form_url, scope=scope, batch=batch_id))
+    return redirect(url_for(
+        "google_forms.google_forms_dashboard",
+        form_url=form_url,
+        scope=scope,
+        batch=batch_id,
+        submitted_count=success_count
+    ))
 
 @google_forms_bp.route("/google_forms/prefilled_links", methods=["GET", "POST"])
 def view_prefilled_links():
