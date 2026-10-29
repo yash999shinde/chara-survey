@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 
-{% block title %}Google Form ऑटोमेशन — चारा सर्वेक्षण प्रणाली{% endblock %}
+{% block title %}Dr. Prathmesh Auto System — Google Form ऑटोमेशन{% endblock %}
 
 {% block content %}
 <div class="row g-4">
     <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center bg-white p-3 rounded-3 shadow-sm border">
+        <div class="d-flex justify-content-between align-items-center bg-white p-3 rounded-3 shadow-sm border border-start border-primary border-4">
             <div>
                 <h3 class="fw-bold text-primary mb-1">
-                    <i class="bi bi-google me-2 text-danger"></i>Google Form ऑटो-फिल व ऑटो-सबमिशन
+                    <i class="bi bi-robot me-2 text-primary"></i>Dr. Prathmesh Auto System — Google Form ऑटो-फिल व ऑटो-सबमिशन
                 </h3>
                 <p class="text-muted small mb-0">
-                    कोणत्याही Google Form ची लिंक पेस्ट करा — सिस्टीम आपोआप सर्व प्रश्न ओळखून शेतकऱ्यांची माहिती भरून थेट सबमिट करेल.
+                    Dr. Prathmesh Auto System: कोणत्याही Google Form ची लिंक पेस्ट करा — सिस्टीम आपोआप सर्व प्रश्न ओळखून थेट सबमिट करेल.
                 </p>
             </div>
             <div>
@@ -27,7 +27,7 @@
         <div class="card shadow-sm border-0 rounded-3 mb-4">
             <div class="card-header bg-white py-3 border-bottom">
                 <h5 class="fw-bold mb-0 text-dark">
-                    <span class="badge bg-primary text-white me-2">१</span>Google Form ची लिंक टाका
+                    <span class="badge bg-primary text-white me-2">१</span>Dr. Prathmesh Auto System — Google Form ची लिंक टाका
                 </h5>
             </div>
             <div class="card-body p-4">
@@ -38,7 +38,7 @@
                             <span class="input-group-text bg-light"><i class="bi bi-link-45deg"></i></span>
                             <input type="url" name="form_url" class="form-control" value="{{ form_url }}" placeholder="https://docs.google.com/forms/d/e/.../viewform" required>
                             <button type="submit" class="btn btn-primary fw-semibold px-4">
-                                <i class="bi bi-search me-1"></i> फॉर्म तपासा (Inspect)
+                                <i class="bi bi-robot me-1"></i> Dr. Prathmesh Auto System द्वारे तपासा
                             </button>
                         </div>
                         <div class="form-text small mt-2">
@@ -58,7 +58,7 @@
                 <div class="alert alert-success bg-success bg-opacity-10 text-success border-0 rounded-3 p-3 mt-3">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="fw-bold mb-1"><i class="bi bi-check-circle-fill me-1"></i> फॉर्म यशस्वीरित्या कनेक्ट झाला!</h6>
+                            <h6 class="fw-bold mb-1"><i class="bi bi-patch-check-fill text-success me-1"></i> Dr. Prathmesh Auto System: फॉर्म यशस्वीरित्या कनेक्ट झाला!</h6>
                             <div class="small text-dark">
                                 <strong>फॉर्म शीर्षक:</strong> {{ form_meta.title or 'चारा टंचाई माहिती - गावनिहाय सर्वेक्षण' }}<br>
                                 <strong>एकूण प्रश्न/फील्ड्स:</strong> {{ form_meta.total_fields }} | 
@@ -124,7 +124,7 @@
         <div class="card shadow-sm border-0 rounded-3 mb-4">
             <div class="card-header bg-white py-3 border-bottom">
                 <h5 class="fw-bold mb-0 text-dark">
-                    <span class="badge bg-success text-white me-2">२</span>ऑटो-फिल व सबमिशन पर्याय
+                    <span class="badge bg-success text-white me-2">२</span>Dr. Prathmesh Auto System — सबमिशन पर्याय
                 </h5>
             </div>
             <div class="card-body p-4">
@@ -175,11 +175,11 @@
 
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-success btn-lg fw-bold shadow-sm">
-                            <i class="bi bi-send-fill me-2"></i>सर्व फॉर्म्स ऑटो-सबमिट करा (Auto-Submit)
+                            <i class="bi bi-robot me-2"></i> Dr. Prathmesh Auto System: सर्व फॉर्म्स ऑटो-सबमिट करा
                         </button>
 
                         <a href="/google_forms/prefilled_links?form_url={{ form_url|urlencode }}&scope=verified" class="btn btn-outline-primary fw-semibold mt-1">
-                            <i class="bi bi-box-arrow-up-right me-1"></i> प्री-फिल्ड लिंक्स पहा (Preview Prefilled Links)
+                            <i class="bi bi-box-arrow-up-right me-1"></i> Dr. Prathmesh Auto System: प्री-फिल्ड लिंक्स पहा
                         </a>
                     </div>
                 </form>
@@ -198,7 +198,7 @@
         <div class="card shadow-sm border-0 rounded-3">
             <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
                 <h5 class="fw-bold mb-0 text-dark">
-                    <i class="bi bi-clock-history me-2 text-primary"></i>अलीकडील सबमिशन लॉग (Submission History)
+                    <i class="bi bi-clock-history me-2 text-primary"></i> Dr. Prathmesh Auto System — सबमिशन इतिहास (Submission History)
                 </h5>
                 <span class="badge bg-light text-dark border">
                     एकूण सबमिट नोंदी: {{ recent_submissions|length }}

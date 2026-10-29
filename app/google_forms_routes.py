@@ -133,7 +133,7 @@ def submit_all_farmers():
             errors.append(f"{f['farmer_name']} (#{f['id']}): {msg}")
 
     if success_count > 0:
-        flash(f"यशस्वी! {success_count} शेतकऱ्यांची माहिती Google Form मध्ये ऑटोमॅटिक भरली गेली!", "success")
+        flash(f"Dr. Prathmesh Auto System: यशस्वी! {success_count} शेतकऱ्यांची माहिती Google Form मध्ये ऑटोमॅटिक भरली गेली!", "success")
     if fail_count > 0:
         flash(f"{fail_count} फॉर्म सबमिशन करताना अडचणी आल्या: {'; '.join(errors[:3])}", "warning")
 
