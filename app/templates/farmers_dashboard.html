@@ -1,8 +1,30 @@
 {% extends "base.html" %}
 
-{% block title %}शेतकरी माहिती डॅशबोर्ड — चारा सर्वेक्षण{% endblock %}
+{% block title %}Welcome Dr. Prathmesh — शेतकरी डॅशबोर्ड{% endblock %}
 
 {% block content %}
+<!-- Welcome Doctor Header Banner -->
+<div class="card bg-white p-3 mb-4 shadow-sm border-0 border-start border-primary border-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div class="d-flex align-items-center">
+            <div class="bg-primary bg-opacity-10 text-primary p-3 rounded-circle me-3">
+                <i class="bi bi-person-circle fs-2"></i>
+            </div>
+            <div>
+                <h3 class="mb-1 text-primary fw-bold">Welcome Dr. Prathmesh</h3>
+                <p class="text-muted mb-0 small">
+                    <i class="bi bi-geo-alt-fill text-danger me-1"></i>पशुसंवर्धन व शेतकरी सर्वेक्षण ऑटोमेशन प्रणाली — अधिकृत डॅशबोर्ड
+                </p>
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            <span class="badge bg-success bg-opacity-10 text-success border border-success px-3 py-2 fs-6 rounded-pill">
+                <i class="bi bi-shield-check me-1"></i> डॉ. प्रथमेश (प्रशासकीय अधिकारी)
+            </span>
+        </div>
+    </div>
+</div>
+
 <div class="row g-3 mb-4">
     <!-- KPI 1: Total Records -->
     <div class="col-md-3 col-sm-6">
